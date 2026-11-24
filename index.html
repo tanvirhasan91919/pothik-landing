@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pothik Holidays — Fixed-price group trips from Dhaka</title>
+<meta name="description" content="Honest, fixed-price group trips across Bangladesh and abroad. Reserve with ৳1,000 on bKash and pay the rest in parts.">
+<meta name="theme-color" content="#F3EFE6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hind+Siliguri:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  /* If a photo fails to load, swap it for a coloured block with the place name. */
+  window.phFail = function (img) {
+    var box = document.createElement('div');
+    box.className = 'ph ph--' + (img.dataset.tone || 'green');
+    box.setAttribute('role', 'img');
+    box.setAttribute('aria-label', img.alt);
+    box.textContent = img.dataset.place || img.alt;
+    img.replaceWith(box);
+  };
+</script>
+<style>
+/* ============ TOKENS ============ */
+:root{
+  --bg:#F3EFE6; --ink:#111111; --orange:#FF4F1A; --green:#0F5B4A;
+  --rule:3px solid var(--ink);
+  --sh:6px 6px 0 var(--ink);
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:40px; --s6:48px; --s8:64px; --s10:80px; --s12:96px;
+  --pad:16px;
+  --nav-h:72px;
+  --f-display:'Anton','Hind Siliguri',Impact,'Arial Narrow',sans-serif;
+  --f-body:'Space Grotesk','Hind Siliguri',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono','Hind Siliguri',ui-monospace,monospace;
+  --f-bn:'Hind Siliguri','Noto Sans Bengali',sans-serif;
+  --focus:var(--green);
+  --snap:90ms cubic-bezier(.2,0,0,1);
+}
+@media (min-width:700px){ :root{ --pad:32px; } }
+@media (min-width:1200px){ :root{ --pad:48px; } }
+
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; border-radius:0; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; scroll-padding-top:var(--nav-h); }
+body{ background:var(--bg); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.5; overflow-x:hidden; }
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+button,input,select{ font:inherit; color:inherit; }
+:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
+.vh{ position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.skip{ position:absolute; left:var(--pad); top:-64px; z-index:100; background:var(--ink); color:var(--bg); padding:var(--s1) var(--s2); font-weight:700; text-decoration:none; }
+.skip:focus{ top:var(--s1); }
+
+.wrap{ padding-left:var(--pad); padding-right:var(--pad); }
+.sec{ padding-top:var(--s8); padding-bottom:var(--s8); border-bottom:var(--rule); }
+@media (min-width:700px){ .sec{ padding-top:var(--s12); padding-bottom:var(--s12); } }
+.mega{ font-family:var(--f-display); font-weight:400; font-size:clamp(48px,11vw,184px); line-height:.9; text-transform:uppercase; letter-spacing:.005em; overflow-wrap:anywhere; }
+.mono{ font-family:var(--f-mono); font-size:13px; letter-spacing:.02em; }
+.lead{ font-size:clamp(17px,1.5vw,20px); max-width:44ch; }
+.sec-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:var(--s3); flex-wrap:wrap; margin-bottom:var(--s5); }
+.sec-head .lead{ margin-top:var(--s2); }
+.dark{ --focus:var(--bg); }
+.on-orange{ --focus:var(--ink); }
+
+/* Bangla mode */
+html[lang="bn"] [data-i18n]{ font-family:var(--f-bn); }
+html[lang="bn"] .disp[data-i18n]{ font-weight:700; line-height:1.12; letter-spacing:0; }
+
+/* Photo fallback block */
+.ph{ width:100%; height:100%; min-height:160px; display:flex; align-items:flex-end; padding:var(--s2); font-family:var(--f-display); font-size:clamp(28px,4vw,48px); line-height:.9; text-transform:uppercase; }
+.ph--green{ background:var(--green); color:var(--bg); }
+.ph--orange{ background:var(--orange); color:var(--ink); }
+.ph--ink{ background:var(--ink); color:var(--bg); }
+
+/* ============ BUTTONS (brutalist press) ============ */
+.btn{
+  --btn-bg:var(--orange); --btn-fg:var(--ink); --btn-sh:var(--ink);
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--s1);
+  font-family:var(--f-body); font-weight:700; font-size:16px; letter-spacing:.04em; text-transform:uppercase; line-height:1.1;
+  text-decoration:none; white-space:nowrap; cursor:pointer;
+  background:var(--btn-bg); color:var(--btn-fg); border:var(--rule); box-shadow:6px 6px 0 var(--btn-sh);
+  padding:var(--s2) var(--s3);
+  transition:transform var(--snap), box-shadow var(--snap), background-color var(--snap);
+}
+.btn:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--btn-sh); }
+.btn:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--btn-sh); }
+.btn--sm{ font-size:14px; padding:var(--s1) var(--s2); }
+.btn--cream{ --btn-bg:var(--bg); }
+.btn--on-dark{ --btn-sh:var(--bg); }
+.btn--lg{ font-size:clamp(18px,2vw,24px); padding:var(--s3) var(--s4); }
+html[lang="bn"] .btn{ letter-spacing:0; }
+
+/* ============ NAV ============ */
+.nav{ position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:var(--rule); }
+.nav-in{ display:flex; align-items:center; gap:var(--s2); height:var(--nav-h); padding:0 var(--pad); }
+.logo{ font-family:var(--f-display); font-size:28px; line-height:1; text-decoration:none; letter-spacing:.01em; margin-right:auto; }
+.logo sup{ font-family:var(--f-body); font-size:.42em; font-weight:700; vertical-align:top; position:relative; top:2px; }
+.nav-links{ display:none; list-style:none; gap:var(--s4); }
+.nav-links a{ display:block; font-weight:700; font-size:15px; letter-spacing:.05em; text-decoration:none; padding:var(--s1) 0; border-bottom:3px solid transparent; transition:border-color var(--snap); }
+.nav-links a:hover{ border-bottom-color:var(--orange); }
+.lang{ display:none; border:var(--rule); }
+.lang button{ background:none; border:0; padding:6px var(--s1); font-family:var(--f-mono); font-size:13px; font-weight:700; cursor:pointer; min-height:36px; }
+.lang button + button{ border-left:var(--rule); font-family:var(--f-bn); font-size:14px; }
+.lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
+.menu-btn{ background:var(--bg); border:var(--rule); font-family:var(--f-mono); font-weight:700; font-size:13px; padding:0 var(--s2); height:40px; cursor:pointer; }
+.menu-btn[aria-expanded="true"]{ background:var(--ink); color:var(--bg); }
+.nav-panel{ border-top:var(--rule); padding:var(--s3) var(--pad) var(--s4); background:var(--bg); }
+.nav-panel ul{ list-style:none; margin-bottom:var(--s3); }
+.nav-panel li a{ display:block; font-family:var(--f-display); font-size:48px; line-height:1.05; text-decoration:none; text-transform:uppercase; border-bottom:var(--rule); padding:var(--s1) 0; }
+.nav-panel .lang{ display:inline-flex; }
+@media (min-width:600px){ .nav-in .lang{ display:flex; } .nav-panel .lang{ display:none; } .logo{ font-size:32px; } }
+@media (min-width:960px){
+  .nav-in{ gap:var(--s4); }
+  .nav-links{ display:flex; margin-right:var(--s1); }
+  .logo{ margin-right:auto; }
+  .menu-btn,.nav-panel{ display:none!important; }
+}
+
+/* ============ HERO ============ */
+.hero{ position:relative; overflow:hidden; border-bottom:var(--rule); min-height:calc(100svh - var(--nav-h) - 3px); display:flex; align-items:flex-end; padding:var(--s4) var(--pad) var(--s5); touch-action:pan-y; }
+.hero-grid{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.hero-inner{ position:relative; z-index:1; width:100%; --hero-fs:18vw; --hero-fs-top:18vw; --hero-lh:.9; }
+.hero h1{ font-weight:400; }
+.hero-word{ display:block; font-family:var(--f-display); text-transform:uppercase; line-height:var(--hero-lh); white-space:nowrap; letter-spacing:-.005em; }
+.hero-word .t{ display:inline-block; }
+.hw-go,.hw-see{ font-size:var(--hero-fs-top); }
+.hw-bd{ font-size:var(--hero-fs); color:var(--orange); }
+html[lang="bn"] .hero-word .t{ font-weight:700; }
+html[lang="bn"] .hero-word,html[lang="bn"] .final h2{ font-family:var(--f-bn); font-weight:700; }
+html[lang="bn"] .hero-word .t,html[lang="bn"] .final h2 .t{ line-height:inherit; }
+html[lang="bn"] .final h2{ line-height:1.1; }
+.tk{ font-family:var(--f-bn); font-weight:700; }
+.num b,.price,.calc-each{ white-space:nowrap; }
+.hero-side{ position:relative; margin-top:var(--s4); display:flex; flex-direction:column; }
+.hero-photo{ position:relative; flex:1; min-height:0; aspect-ratio:4/3; margin-right:var(--s1); border:var(--rule); box-shadow:var(--sh); background:var(--green); transform:rotate(1.5deg); }
+.hero-photo img,.hero-photo .ph{ width:100%; height:100%; object-fit:cover; }
+.hero-photo .tag{ position:absolute; left:-3px; top:var(--s2); background:var(--ink); color:var(--bg); padding:4px var(--s1); }
+.hero-line{ margin-top:var(--s4); padding-right:128px; font-size:clamp(17px,1.5vw,21px); font-weight:500; max-width:34ch; }
+.btn-round{
+  position:absolute; right:var(--s1); bottom:calc(-1 * var(--s5)); z-index:2;
+  width:120px; height:120px; border-radius:50%; display:grid; place-items:center; text-align:center;
+  background:var(--ink); color:var(--bg); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--orange);
+  font-weight:700; font-size:15px; line-height:1.15; letter-spacing:.04em; text-decoration:none;
+  transition:transform var(--snap), box-shadow var(--snap), background-color var(--snap), color var(--snap);
+}
+.btn-round:hover{ background:var(--orange); color:var(--ink); box-shadow:8px 8px 0 var(--ink); transform:translate(-2px,-2px); }
+.btn-round:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--ink); }
+@media (min-width:700px){ .hero-photo{ aspect-ratio:2/1; transform:rotate(2.5deg); } .btn-round{ width:144px; height:144px; font-size:17px; } .hero-line{ padding-right:168px; } }
+/* side-by-side layout, set by JS when the screen is wide */
+.hero.is-wide .hero-side{ position:absolute; top:0; right:0; margin:0; width:min(calc(100% - var(--left-w, 45%) - var(--s5)), 760px); height:calc(var(--hero-fs-top) * var(--hero-lh) * 2 - var(--s2)); }
+.hero.is-wide .hero-photo{ aspect-ratio:auto; }
+.hero.is-wide .hero-line{ margin-top:var(--s3); }
+
+/* ============ VELOCITY TICKER ============ */
+.ticker{ background:var(--ink); color:var(--bg); border-bottom:var(--rule); padding:var(--s2) 0; overflow:hidden; }
+.vel-row{ overflow:hidden; white-space:nowrap; }
+.vel-track{ display:inline-flex; will-change:transform; }
+.vel-unit{ display:inline-flex; align-items:center; font-family:var(--f-display); font-size:clamp(64px,10vw,168px); line-height:1.02; text-transform:uppercase; padding-right:.2em; }
+.vel-unit .star{ width:.5em; height:.5em; margin:0 .28em; flex:none; color:var(--orange); }
+.vel-row--alt{ color:var(--orange); }
+.vel-row--alt .star{ color:var(--bg); }
+
+/* ============ TRIPS ============ */
+.rail-ctrl{ display:flex; align-items:center; gap:var(--s2); }
+.sq-btn{ width:56px; height:56px; display:grid; place-items:center; background:var(--bg); border:var(--rule); box-shadow:var(--sh); cursor:pointer; font-size:24px; font-weight:700; transition:transform var(--snap), box-shadow var(--snap), opacity var(--snap); }
+.sq-btn:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--ink); }
+.sq-btn:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--ink); }
+.sq-btn:disabled{ opacity:.3; cursor:default; transform:none; box-shadow:var(--sh); }
+.rail{ display:flex; gap:var(--s3); overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding-inline:var(--pad); padding:0 var(--pad) var(--s3); scrollbar-width:none; cursor:grab; }
+.rail::-webkit-scrollbar{ display:none; }
+.rail::after{ content:""; flex:0 0 1px; }
+.rail.dragging{ scroll-snap-type:none; cursor:grabbing; user-select:none; }
+.rail.dragging .trip{ pointer-events:none; }
+.rail-bar{ margin:var(--s2) var(--pad) 0; height:8px; border:var(--rule); box-sizing:content-box; }
+.rail-bar span{ display:block; height:100%; background:var(--ink); transform-origin:left; transform:scaleX(.2); transition:transform 60ms linear; }
+
+.trip{ --c-bg:var(--bg); --c-fg:var(--ink); flex:0 0 clamp(288px,82vw,384px); scroll-snap-align:start; display:flex; flex-direction:column; background:var(--c-bg); color:var(--c-fg); border:var(--rule); box-shadow:var(--sh); }
+.trip--orange{ --c-bg:var(--orange); --focus:var(--ink); }
+.trip--green{ --c-bg:var(--green); --c-fg:var(--bg); --focus:var(--bg); }
+.trip-top{ display:flex; justify-content:space-between; align-items:center; padding:var(--s1) var(--s3); border-bottom:var(--rule); }
+.trip-num{ font-family:var(--f-display); font-size:40px; line-height:1; }
+.trip-dur{ border:3px solid currentColor; padding:2px var(--s1); font-weight:700; }
+.trip-title{ font-family:var(--f-display); font-weight:400; font-size:clamp(40px,4vw,52px); line-height:.92; text-transform:uppercase; padding:var(--s3) var(--s3) var(--s2); min-height:calc(2 * .92em + 40px); }
+.trip-photo{ margin:0 var(--s3); border:var(--rule); aspect-ratio:16/10; overflow:hidden; background:var(--ink); }
+.trip-photo img{ width:100%; height:100%; object-fit:cover; pointer-events:none; }
+.trip-rows{ list-style:none; margin:var(--s3) var(--s3) 0; border-top:3px solid currentColor; }
+.trip-rows li{ display:grid; grid-template-columns:80px 1fr; gap:var(--s2); padding:var(--s1) 0; border-bottom:3px solid currentColor; font-size:15px; line-height:1.35; }
+.trip-rows .mono{ font-weight:700; padding-top:1px; }
+.trip-foot{ margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; gap:var(--s2); padding:var(--s3); }
+.price{ font-family:var(--f-display); font-size:48px; line-height:1; display:block; }
+.trip-next{ background:var(--ink); color:var(--bg); padding:var(--s1) var(--s3); border-top:var(--rule); }
+
+/* ============ BIG NUMBERS ============ */
+.nums{ display:grid; grid-template-columns:1fr; border-bottom:var(--rule); }
+.num{ padding:var(--s6) var(--pad); border-top:var(--rule); }
+.num:first-child{ border-top:0; }
+.num b{ display:block; font-family:var(--f-display); font-weight:400; font-size:clamp(96px,12vw,208px); line-height:.9; }
+.num:first-child b{ color:var(--orange); }
+.num span{ display:block; margin-top:var(--s2); font-size:clamp(18px,1.6vw,22px); font-weight:700; max-width:16ch; }
+@media (min-width:700px){ .nums{ grid-template-columns:repeat(3,1fr); } .num{ border-top:0; border-left:var(--rule); padding:var(--s8) var(--s4); } .num:first-child{ border-left:0; padding-left:var(--pad); } }
+
+/* ============ HOW IT WORKS ============ */
+.how{ background:var(--green); color:var(--bg); }
+.steps{ list-style:none; display:grid; gap:var(--s4); grid-template-columns:1fr; }
+.step{ background:var(--bg); color:var(--ink); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); display:flex; flex-direction:column; --focus:var(--green); }
+.step-n{ font-family:var(--f-display); font-size:104px; line-height:.85; color:var(--orange); }
+.step h3{ font-family:var(--f-display); font-weight:400; font-size:clamp(28px,2.6vw,36px); line-height:1; text-transform:uppercase; margin:var(--s3) 0 var(--s1); }
+.step p{ max-width:34ch; }
+@media (min-width:820px){ .steps{ grid-template-columns:repeat(3,1fr); } }
+
+/* ============ BADGE MARQUEE ============ */
+.proof{ border-bottom:var(--rule); overflow:hidden; padding:var(--s3) 0; }
+.proof-track{ display:flex; width:max-content; animation:marq 32s linear infinite; }
+.proof:hover .proof-track{ animation-play-state:paused; }
+.proof-set{ display:flex; align-items:center; gap:var(--s2); padding-right:var(--s2); }
+.badge{ border:var(--rule); padding:var(--s1) var(--s3); font-weight:700; font-size:22px; white-space:nowrap; background:var(--bg); }
+.badge--ink{ background:var(--ink); color:var(--bg); }
+.proof-label{ padding:0 var(--s1) 0 var(--s3); white-space:nowrap; font-weight:700; }
+@keyframes marq{ to{ transform:translateX(-50%); } }
+
+/* ============ MOMENTS (Instagram cards) ============ */
+.ig-grid{ display:grid; gap:var(--s4); grid-template-columns:repeat(auto-fit,minmax(288px,1fr)); }
+.ig{ border:var(--rule); box-shadow:var(--sh); background:var(--bg); display:flex; flex-direction:column; }
+.ig-head{ display:flex; align-items:center; gap:var(--s2); padding:var(--s2); border-bottom:var(--rule); }
+.ig-av{ flex:none; width:40px; height:40px; display:grid; place-items:center; border:var(--rule); font-family:var(--f-display); font-size:18px; }
+.ig-who{ line-height:1.25; min-width:0; }
+.ig-who b{ display:block; font-size:15px; }
+.ig-dots{ margin-left:auto; font-weight:700; letter-spacing:.1em; }
+.ig-photo{ aspect-ratio:1/1; overflow:hidden; border-bottom:var(--rule); background:var(--ink); }
+.ig-photo img{ width:100%; height:100%; object-fit:cover; }
+.ig-actions{ display:flex; align-items:center; gap:var(--s1); padding:var(--s1) var(--s1) 0; }
+.ig-actions button,.ig-actions span{ width:40px; height:40px; display:grid; place-items:center; background:none; border:0; }
+.ig-actions button{ cursor:pointer; }
+.ig-actions svg{ width:26px; height:26px; fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round; }
+.ig-actions .save{ margin-left:auto; }
+.ig-like[aria-pressed="true"] svg{ fill:var(--orange); }
+.ig-like.pop svg{ animation:pop 160ms steps(2,end); }
+@keyframes pop{ 50%{ transform:scale(1.3); } }
+.ig-body{ padding:0 var(--s2) var(--s2); font-size:15px; }
+.ig-likes{ font-weight:700; margin-bottom:4px; }
+.ig-cap b{ margin-right:4px; }
+.ig-cap .tag{ color:var(--green); font-weight:700; }
+.ig-time{ margin-top:var(--s1); opacity:.7; }
+
+/* ============ GROUP DEAL ============ */
+.deal{ background:var(--orange); color:var(--ink); }
+.deal-grid{ display:grid; gap:var(--s6); grid-template-columns:1fr; align-items:end; }
+.deal .mega{ font-size:clamp(56px,8.5vw,152px); }
+.deal .lead{ margin-top:var(--s3); font-weight:500; }
+.calc{ background:var(--bg); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); --focus:var(--green); }
+.field{ display:block; margin-bottom:var(--s3); }
+.field > span{ display:block; margin-bottom:var(--s1); font-weight:700; }
+.select,.input{ width:100%; height:56px; border:var(--rule); background:var(--bg); padding:0 var(--s2); font-size:17px; }
+.select{ appearance:none; background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%); background-position:calc(100% - 24px) 50%,calc(100% - 16px) 50%; background-size:8px 8px; background-repeat:no-repeat; padding-right:var(--s6); }
+.stepper{ display:flex; }
+.stepper button{ width:56px; height:56px; border:var(--rule); background:var(--ink); color:var(--bg); font-size:24px; font-weight:700; cursor:pointer; }
+.stepper button:active{ background:var(--orange); color:var(--ink); }
+.stepper input{ width:88px; height:56px; border:var(--rule); border-left:0; border-right:0; text-align:center; font-family:var(--f-display); font-size:28px; background:var(--bg); -moz-appearance:textfield; }
+.stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
+.calc-out{ border-top:var(--rule); padding-top:var(--s3); margin-bottom:var(--s3); }
+.calc-each{ font-family:var(--f-display); font-size:56px; line-height:1; }
+.calc-each small{ font-family:var(--f-body); font-size:17px; font-weight:700; margin-left:var(--s1); }
+.calc-note{ margin-top:var(--s1); font-size:15px; }
+@media (min-width:960px){ .deal-grid{ grid-template-columns:1.35fr 1fr; } }
+
+/* ============ FAQ ============ */
+.faq-grid{ display:grid; gap:var(--s5); grid-template-columns:1fr; }
+.faq-side .lead{ margin-top:var(--s3); }
+.faq-side .mega{ font-size:clamp(48px,13vw,120px); overflow-wrap:normal; }
+.faq-list{ border-top:var(--rule); }
+.faq-list details{ border-bottom:var(--rule); }
+.faq-list summary{ list-style:none; display:flex; justify-content:space-between; align-items:center; gap:var(--s3); padding:var(--s3) 0; cursor:pointer; font-family:var(--f-display); font-size:clamp(24px,2.6vw,36px); line-height:1.05; text-transform:uppercase; }
+.faq-list summary::-webkit-details-marker{ display:none; }
+html[lang="bn"] .faq-list summary{ font-family:var(--f-bn); font-weight:700; }
+.pm{ flex:none; width:48px; height:48px; border:var(--rule); display:grid; place-items:center; background:var(--bg); transition:background-color var(--snap); }
+.pm::before{ content:"+"; font-family:var(--f-mono); font-size:28px; font-weight:700; line-height:1; transition:transform var(--snap); }
+details[open] .pm{ background:var(--orange); }
+details[open] .pm::before{ transform:rotate(45deg); }
+.faq-list summary:hover .pm{ background:var(--orange); }
+.faq-a{ padding:0 0 var(--s3); max-width:62ch; font-size:18px; }
+@media (min-width:960px){ .faq-side .mega{ font-size:min(7.2vw,120px); } .faq-grid{ grid-template-columns:1fr 1.6fr; } .faq-side{ position:sticky; top:calc(var(--nav-h) + var(--s4)); align-self:start; } }
+
+/* ============ FINAL CTA ============ */
+.final{ background:var(--ink); color:var(--bg); min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:var(--s5); text-align:center; padding:var(--s10) var(--pad); border-bottom:var(--rule); }
+.final h2{ font-family:var(--f-display); font-weight:400; line-height:.84; white-space:nowrap; font-size:clamp(120px,30vw,560px); }
+.final h2 .t{ display:inline-block; }
+.final .mono{ font-size:14px; }
+
+/* ============ FOOTER ============ */
+.foot{ padding-top:var(--s10); overflow:hidden; }
+.foot-grid{ display:grid; gap:var(--s5) var(--s4); grid-template-columns:repeat(2,1fr); }
+.foot-brand{ grid-column:1/-1; }
+.foot-brand address{ font-style:normal; margin-top:var(--s2); max-width:32ch; }
+.foot-brand .lic{ margin-top:var(--s2); font-weight:700; }
+.pay{ display:flex; flex-wrap:wrap; gap:var(--s1); margin-top:var(--s3); }
+.pay span{ border:var(--rule); padding:4px var(--s1); font-weight:700; font-size:14px; }
+.foot h3{ font-family:var(--f-mono); font-size:13px; font-weight:700; margin-bottom:var(--s2); }
+.foot ul{ list-style:none; }
+.foot li a{ display:inline-block; text-decoration:none; padding:4px 0; font-weight:500; text-decoration-thickness:3px; text-underline-offset:4px; }
+.foot li a:hover{ text-decoration:underline; text-decoration-color:var(--orange); }
+.foot-meta{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:var(--s1) var(--s3); border-top:var(--rule); margin-top:var(--s8); padding:var(--s2) 0; }
+.wordmark{ display:block; font-family:var(--f-display); font-weight:400; line-height:.86; white-space:nowrap; font-size:30vw; text-align:center; margin:var(--s2) 0 -.06em; }
+.wordmark .t{ display:inline-block; }
+@media (min-width:820px){ .foot-grid{ grid-template-columns:2fr repeat(4,1fr); } .foot-brand{ grid-column:auto; } }
+
+/* ============ DIALOG ============ */
+dialog{ margin:auto; width:min(560px, calc(100vw - 32px)); max-height:calc(100svh - 32px); border:var(--rule); box-shadow:var(--sh); background:var(--bg); color:var(--ink); padding:0; overflow:auto; }
+dialog::backdrop{ background:rgba(17,17,17,.7); }
+.dlg-head{ display:flex; justify-content:space-between; align-items:center; gap:var(--s2); background:var(--orange); border-bottom:var(--rule); padding:var(--s2) var(--s3); --focus:var(--ink); }
+.dlg-title{ font-family:var(--f-display); font-weight:400; font-size:36px; line-height:1; text-transform:uppercase; }
+.dlg-x{ width:48px; height:48px; flex:none; border:var(--rule); background:var(--bg); font-size:20px; font-weight:700; cursor:pointer; }
+.dlg-body{ padding:var(--s3); }
+.dlg-note{ margin-bottom:var(--s3); }
+.dlg-done{ font-size:19px; font-weight:500; }
+.dlg-done b{ display:block; font-family:var(--f-display); font-weight:400; font-size:40px; line-height:1; margin-bottom:var(--s2); }
+.input:invalid:not(:placeholder-shown){ border-color:var(--orange); }
+.hint{ display:block; margin-top:4px; font-size:14px; }
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion:reduce){
+  html{ scroll-behavior:auto; }
+  *,*::before,*::after{ transition-duration:0s!important; animation:none!important; }
+  .proof-track{ flex-wrap:wrap; width:auto; padding:0 var(--pad); row-gap:var(--s2); }
+  .proof-set[aria-hidden="true"]{ display:none; }
+  .vel-row{ white-space:normal; }
+  .vel-unit:not(:first-child){ display:none; }
+  .vel-unit{ flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#trips">Skip to trips</a>
+
+<!-- 1. NAVBAR -->
+<header class="nav">
+  <div class="nav-in">
+    <a class="logo" href="#top" aria-label="Pothik Holidays, home">POTHIK<sup>®</sup></a>
+    <nav aria-label="Main">
+      <ul class="nav-links">
+        <li><a href="#trips" data-i18n="nav.trips">TRIPS</a></li>
+        <li><a href="#deal" data-i18n="nav.deals">DEALS</a></li>
+        <li><a href="#moments" data-i18n="nav.stories">STORIES</a></li>
+        <li><a href="#about" data-i18n="nav.about">ABOUT</a></li>
+      </ul>
+    </nav>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="bn" aria-pressed="false" lang="bn">বাংলা</button>
+    </div>
+    <a class="btn btn--sm" href="#trips" data-i18n="nav.book">BOOK NOW ↗</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-panel">MENU</button>
+  </div>
+  <div class="nav-panel" id="nav-panel" hidden>
+    <ul>
+      <li><a href="#trips" data-i18n="nav.trips">TRIPS</a></li>
+      <li><a href="#deal" data-i18n="nav.deals">DEALS</a></li>
+      <li><a href="#moments" data-i18n="nav.stories">STORIES</a></li>
+      <li><a href="#about" data-i18n="nav.about">ABOUT</a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="bn" aria-pressed="false" lang="bn">বাংলা</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- 2. HERO -->
+<section class="hero" aria-label="Introduction">
+  <canvas class="hero-grid" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <h1>
+      <span class="hero-word hw-go"><span class="t disp" data-i18n="hero.go">GO.</span></span>
+      <span class="hero-word hw-see"><span class="t disp" data-i18n="hero.see">SEE.</span></span>
+      <span class="hero-word hw-bd"><span class="t disp" data-i18n="hero.bd">BANGLADESH.</span></span>
+    </h1>
+    <div class="hero-side">
+      <figure class="hero-photo">
+        <img src="https://images.unsplash.com/photo-1658383898607-6b92e8196e33?auto=format&fit=crop&w=1400&q=70"
+             alt="Clouds drifting over the forested hills of Sajek Valley at dawn"
+             width="1400" height="933" fetchpriority="high" data-place="Sajek Valley" data-tone="green" onerror="phFail(this)">
+        <figcaption class="tag mono">SAJEK, 05:42</figcaption>
+        <a class="btn-round" href="#trips"><span data-i18n="hero.cta">BOOK A<br>TRIP ↗</span></a>
+      </figure>
+      <p class="hero-line" data-i18n="hero.line">Weekend trips from ৳5,800. No boring itineraries. Pay with bKash.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. DESTINATION TICKER (scroll-based velocity) -->
+<section class="ticker" aria-label="Destinations">
+  <p class="vh">Destinations: Sajek, Sundarbans, Saint Martin, Srimangal, Bandarban, Kuakata.</p>
+  <div class="vel-row" data-speed="70" data-dir="-1" aria-hidden="true">
+    <div class="vel-track">
+      <span class="vel-unit">SAJEK<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SUNDARBANS<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAINT MARTIN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SRIMANGAL<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>BANDARBAN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>KUAKATA<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg></span>
+    </div>
+  </div>
+  <div class="vel-row vel-row--alt" data-speed="70" data-dir="1" aria-hidden="true">
+    <div class="vel-track">
+      <span class="vel-unit">KUAKATA<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>BANDARBAN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SRIMANGAL<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAINT MARTIN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SUNDARBANS<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAJEK<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg></span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. TRIPS -->
+<section class="sec" id="trips" aria-labelledby="trips-h">
+  <div class="sec-head wrap">
+    <div>
+      <h2 class="mega disp" id="trips-h" data-i18n="trips.h">TRIPS →</h2>
+      <p class="lead" data-i18n="trips.sub">Fixed prices. Transport from Dhaka, stays, meals and a trip leader included.</p>
+    </div>
+    <div class="rail-ctrl">
+      <button class="sq-btn" type="button" data-rail="prev" aria-label="Previous trips">←</button>
+      <button class="sq-btn" type="button" data-rail="next" aria-label="Next trips">→</button>
+    </div>
+  </div>
+
+  <div class="rail" tabindex="0" role="region" aria-label="Trips, scroll sideways">
+    <article class="trip trip--orange" data-id="sajek" data-name="Sajek Valley" data-price="6500">
+      <div class="trip-top"><span class="trip-num">01</span><span class="trip-dur mono">2N/3D</span></div>
+      <h3 class="trip-title">Sajek Valley</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1645153529792-c5823ffe9525?auto=format&fit=crop&w=800&q=70" alt="Hilltop village houses in Sajek Valley surrounded by trees" width="800" height="500" loading="lazy" draggable="false" data-place="Sajek Valley" data-tone="ink" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">THU 22:30</span><span>AC bus from Kalabagan</span></li>
+        <li><span class="mono">FRI</span><span>Chander gari up to Sajek, Ruilui Para cottage</span></li>
+        <li><span class="mono">SAT 05:30</span><span>Sunrise above the clouds at Konglak</span></li>
+        <li><span class="mono">SUN 07:00</span><span>Back in Dhaka</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>6,500</span><span class="mono">all-in, per person</span></div>
+        <button class="btn btn--cream btn--sm" type="button" data-book="sajek" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Next departure Thu 3 Dec, 6 seats left</p>
+    </article>
+
+    <article class="trip trip--green" data-id="srimangal" data-name="Srimangal Tea Trail" data-price="8900">
+      <div class="trip-top"><span class="trip-num">02</span><span class="trip-dur mono">2N/3D</span></div>
+      <h3 class="trip-title">Srimangal Tea Trail</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1724257288409-dd6e1de5c20d?auto=format&fit=crop&w=800&q=70" alt="Tree-covered green hills in the tea country around Srimangal" width="800" height="500" loading="lazy" draggable="false" data-place="Srimangal" data-tone="orange" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">THU 22:00</span><span>Night train from Kamalapur</span></li>
+        <li><span class="mono">FRI</span><span>Tea estates and a Lawachara forest walk</span></li>
+        <li><span class="mono">SAT</span><span>Madhabpur Lake, seven-layer tea</span></li>
+        <li><span class="mono">SUN 06:00</span><span>Back in Dhaka</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>8,900</span><span class="mono">all-in, per person</span></div>
+        <button class="btn btn--sm" type="button" data-book="srimangal" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Next departure Thu 10 Dec, 9 seats left</p>
+    </article>
+
+    <article class="trip" data-id="tanguar" data-name="Tanguar Haor Houseboat" data-price="5800">
+      <div class="trip-top"><span class="trip-num">03</span><span class="trip-dur mono">1N/2D</span></div>
+      <h3 class="trip-title">Tanguar Haor Houseboat</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1696347516329-5244eae4e5f1?auto=format&fit=crop&w=800&h=500&q=70" alt="A lone tree standing in the still water of Tanguar Haor" width="800" height="500" loading="lazy" draggable="false" data-place="Tanguar Haor" data-tone="green" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">THU 23:00</span><span>Bus from Sayedabad to Sunamganj</span></li>
+        <li><span class="mono">FRI</span><span>Board the houseboat, Watchtower and Niladri Lake</span></li>
+        <li><span class="mono">FRI 21:00</span><span>Deck dinner, sleep on the haor</span></li>
+        <li><span class="mono">SAT 23:00</span><span>Back in Dhaka</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>5,800</span><span class="mono">all-in, per person</span></div>
+        <button class="btn btn--sm" type="button" data-book="tanguar" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Winter run: shallower water, more birds. Next Thu 10 Dec</p>
+    </article>
+
+    <article class="trip trip--orange" data-id="sundarbans" data-name="Sundarbans Cruise" data-price="11600">
+      <div class="trip-top"><span class="trip-num">04</span><span class="trip-dur mono">3N/4D</span></div>
+      <h3 class="trip-title">Sundarbans Cruise</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1549300461-11c5b94e8855?auto=format&fit=crop&w=800&q=70" alt="Tall mangrove trees lining a channel in the Sundarbans" width="800" height="500" loading="lazy" draggable="false" data-place="Sundarbans" data-tone="ink" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">DAY 1</span><span>Night bus to Khulna, board the launch</span></li>
+        <li><span class="mono">DAY 2</span><span>Kotka and Kochikhali with an armed forest guard</span></li>
+        <li><span class="mono">DAY 3</span><span>Country boat through the canals at dawn</span></li>
+        <li><span class="mono">DAY 4</span><span>Karamjal, back in Dhaka by night</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>11,600</span><span class="mono">all-in, per person</span></div>
+        <button class="btn btn--cream btn--sm" type="button" data-book="sundarbans" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Next departure Wed 9 Dec, 12 cabins left</p>
+    </article>
+
+    <article class="trip trip--green" data-id="bandarban" data-name="Bandarban Nilgiri Trek" data-price="9900">
+      <div class="trip-top"><span class="trip-num">05</span><span class="trip-dur mono">3N/4D</span></div>
+      <h3 class="trip-title">Bandarban Nilgiri Trek</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1715922808700-f707baae4bb5?auto=format&fit=crop&w=800&q=70" alt="Fog and low clouds over green hills in Bandarban" width="800" height="500" loading="lazy" draggable="false" data-place="Bandarban" data-tone="orange" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">DAY 1</span><span>Night bus from Arambagh</span></li>
+        <li><span class="mono">DAY 2</span><span>Nilgiri at 2,200 ft, sunset over the hills</span></li>
+        <li><span class="mono">DAY 3</span><span>Trek to Shoilo Propat falls and Chimbuk</span></li>
+        <li><span class="mono">DAY 4</span><span>Nilachal viewpoint, bus home</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>9,900</span><span class="mono">all-in, per person</span></div>
+        <button class="btn btn--sm" type="button" data-book="bandarban" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Victory Day long weekend: Tue 15 Dec</p>
+    </article>
+
+    <article class="trip" data-id="nepal" data-name="Kathmandu &amp; Pokhara" data-price="45000">
+      <div class="trip-top"><span class="trip-num">06</span><span class="trip-dur mono">4N/5D</span></div>
+      <h3 class="trip-title">Kathmandu &amp; Pokhara</h3>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1716503191918-b811f0f9cdb1?auto=format&fit=crop&w=800&q=70" alt="A row of wooden boats on Phewa Lake in Pokhara, Nepal" width="800" height="500" loading="lazy" draggable="false" data-place="Pokhara" data-tone="green" onerror="phFail(this)"></div>
+      <ul class="trip-rows">
+        <li><span class="mono">DAY 1</span><span>Fly Dhaka to Kathmandu, check in at Thamel</span></li>
+        <li><span class="mono">DAY 2</span><span>Tourist bus to Pokhara, evening on Phewa Lake</span></li>
+        <li><span class="mono">DAY 3</span><span>Sarangkot sunrise, paragliding optional</span></li>
+        <li><span class="mono">DAY 4–5</span><span>Kathmandu Durbar Square, fly home</span></li>
+      </ul>
+      <div class="trip-foot">
+        <div><span class="price"><span class="tk">৳</span>45,000</span><span class="mono">per person, flights included</span></div>
+        <button class="btn btn--sm" type="button" data-book="nepal" data-i18n="card.book">BOOK ↗</button>
+      </div>
+      <p class="trip-next mono">Next departure Tue 22 Dec, 4 seats left</p>
+    </article>
+  </div>
+  <div class="rail-bar" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- 5. BIG NUMBERS -->
+<section class="nums" id="about" aria-label="Pothik in numbers">
+  <div class="num"><b><span class="tk">৳</span>0</b><span data-i18n="num.1">hidden fees. Ever.</span></div>
+  <div class="num"><b>24/7</b><span data-i18n="num.2">Bangla support on WhatsApp</span></div>
+  <div class="num"><b>12K+</b><span data-i18n="num.3">trips booked by under-25s</span></div>
+</section>
+
+<!-- 6. HOW IT WORKS -->
+<section class="sec how dark" aria-labelledby="how-h">
+  <div class="wrap">
+    <h2 class="mega disp" id="how-h" data-i18n="how.h" style="margin-bottom:var(--s6)">HOW IT WORKS</h2>
+    <ol class="steps">
+      <li class="step">
+        <span class="step-n" aria-hidden="true">1</span>
+        <h3 class="disp" data-i18n="how.1t">Pick a trip</h3>
+        <p data-i18n="how.1d">Browse fixed-price trips. The price on the card is the price you pay: transport, stays, meals and guide included.</p>
+      </li>
+      <li class="step">
+        <span class="step-n" aria-hidden="true">2</span>
+        <h3 class="disp" data-i18n="how.2t">Reserve with ৳1,000 on bKash</h3>
+        <p data-i18n="how.2d">Lock your seat in under a minute. Pay the rest in up to 3 parts before you leave.</p>
+      </li>
+      <li class="step">
+        <span class="step-n" aria-hidden="true">3</span>
+        <h3 class="disp" data-i18n="how.3t">Pack your bag</h3>
+        <p data-i18n="how.3d">We add you to the trip's WhatsApp group with your leader, the packing list and your pickup point.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 7. SOCIAL PROOF MARQUEE -->
+<section class="proof" aria-label="Payment partners and licences">
+  <div class="proof-track">
+    <div class="proof-set">
+      <span class="proof-label mono" data-i18n="proof.pay">Pay with</span>
+      <span class="badge">bKash</span><span class="badge">Nagad</span><span class="badge">Rocket</span><span class="badge">VISA</span><span class="badge">Mastercard</span>
+      <span class="proof-label mono" data-i18n="proof.lic">Licensed by</span>
+      <span class="badge badge--ink">IATA</span><span class="badge badge--ink">ATAB</span><span class="badge badge--ink">TOAB</span>
+    </div>
+    <div class="proof-set" aria-hidden="true">
+      <span class="proof-label mono" data-i18n="proof.pay">Pay with</span>
+      <span class="badge">bKash</span><span class="badge">Nagad</span><span class="badge">Rocket</span><span class="badge">VISA</span><span class="badge">Mastercard</span>
+      <span class="proof-label mono" data-i18n="proof.lic">Licensed by</span>
+      <span class="badge badge--ink">IATA</span><span class="badge badge--ink">ATAB</span><span class="badge badge--ink">TOAB</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. TESTIMONIALS -->
+<section class="sec" id="moments" aria-labelledby="moments-h">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2 class="mega" id="moments-h">#POTHIKMOMENTS</h2>
+        <p class="lead" data-i18n="moments.sub">Real trips, posted by real travellers. Tag #pothikmoments and we might repost you.</p>
+      </div>
+    </div>
+    <div class="ig-grid">
+      <article class="ig">
+        <header class="ig-head">
+          <span class="ig-av" style="background:var(--orange)" aria-hidden="true">N</span>
+          <div class="ig-who"><b>nusrat.wanders</b><span class="mono">Saint Martin's Island</span></div>
+          <span class="ig-dots" aria-hidden="true">•••</span>
+        </header>
+        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1714026983620-18088b76bdb5?auto=format&fit=crop&w=700&h=700&q=70" alt="Fishing boats pulled up on the sand at Saint Martin's Island" width="700" height="700" loading="lazy" data-place="Saint Martin" data-tone="orange" onerror="phFail(this)"></div>
+        <div class="ig-actions">
+          <button class="ig-like" type="button" aria-pressed="false" aria-label="Like nusrat.wanders's post"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.4-9.1C1.2 8 3.2 4.6 6.6 4.6c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.4 0 5.4 3.4 4 6.8-1.9 4.5-9.4 9.1-9.4 9.1z"/></svg></button>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.1A8.5 8.5 0 1 1 21 12z"/></svg></span>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 3 10.5 13.5M22 3l-7 18-4.5-7.5L3 10z"/></svg></span>
+          <span class="save" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-5-6 5z"/></svg></span>
+        </div>
+        <div class="ig-body">
+          <p class="ig-likes"><span class="n" data-base="2184">2,184</span> likes</p>
+          <p class="ig-cap"><b>nusrat.wanders</b>Paid for this in 3 parts on bKash during exam month. Coral beach, daab at sunset, zero surprise charges. Best decision of 2026. <span class="tag">#pothikmoments</span></p>
+          <p class="ig-time mono">3 days ago</p>
+        </div>
+      </article>
+
+      <article class="ig">
+        <header class="ig-head">
+          <span class="ig-av" style="background:var(--green);color:var(--bg)" aria-hidden="true">R</span>
+          <div class="ig-who"><b>rafi.on.water</b><span class="mono">Tanguar Haor, Sunamganj</span></div>
+          <span class="ig-dots" aria-hidden="true">•••</span>
+        </header>
+        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1695277501535-691c6a843578?auto=format&fit=crop&w=700&h=700&q=70" alt="A wooden boat on open water at Tanguar Haor" width="700" height="700" loading="lazy" data-place="Tanguar Haor" data-tone="green" onerror="phFail(this)"></div>
+        <div class="ig-actions">
+          <button class="ig-like" type="button" aria-pressed="false" aria-label="Like rafi.on.water's post"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.4-9.1C1.2 8 3.2 4.6 6.6 4.6c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.4 0 5.4 3.4 4 6.8-1.9 4.5-9.4 9.1-9.4 9.1z"/></svg></button>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.1A8.5 8.5 0 1 1 21 12z"/></svg></span>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 3 10.5 13.5M22 3l-7 18-4.5-7.5L3 10z"/></svg></span>
+          <span class="save" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-5-6 5z"/></svg></span>
+        </div>
+        <div class="ig-body">
+          <p class="ig-likes"><span class="n" data-base="967">967</span> likes</p>
+          <p class="ig-cap"><b>rafi.on.water</b>No network, full moon, khichuri on deck at midnight. Our trip leader Ayesha apa had the girls' cabin sorted before we even boarded. Going again in monsoon. <span class="tag">#pothikmoments</span></p>
+          <p class="ig-time mono">1 week ago</p>
+        </div>
+      </article>
+
+      <article class="ig">
+        <header class="ig-head">
+          <span class="ig-av" style="background:var(--ink);color:var(--bg)" aria-hidden="true">T</span>
+          <div class="ig-who"><b>tahmid_trails</b><span class="mono">Bandarban</span></div>
+          <span class="ig-dots" aria-hidden="true">•••</span>
+        </header>
+        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1695294180798-04a56eed6d4e?auto=format&fit=crop&w=700&h=700&q=70" alt="A waterfall pouring into a pool in the Bandarban forest" width="700" height="700" loading="lazy" data-place="Bandarban" data-tone="ink" onerror="phFail(this)"></div>
+        <div class="ig-actions">
+          <button class="ig-like" type="button" aria-pressed="false" aria-label="Like tahmid_trails's post"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.4-9.1C1.2 8 3.2 4.6 6.6 4.6c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.4 0 5.4 3.4 4 6.8-1.9 4.5-9.4 9.1-9.4 9.1z"/></svg></button>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.1A8.5 8.5 0 1 1 21 12z"/></svg></span>
+          <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 3 10.5 13.5M22 3l-7 18-4.5-7.5L3 10z"/></svg></span>
+          <span class="save" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-5-6 5z"/></svg></span>
+        </div>
+        <div class="ig-body">
+          <p class="ig-likes"><span class="n" data-base="3412">3,412</span> likes</p>
+          <p class="ig-cap"><b>tahmid_trails</b>First trek ever. Thought my legs would quit on the Nilgiri road, ended up swimming under a waterfall. Our guide knew every shortcut and every tong cha stall. <span class="tag">#pothikmoments</span></p>
+          <p class="ig-time mono">2 weeks ago</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 9. GROUP DEAL -->
+<section class="sec deal on-orange" id="deal" aria-labelledby="deal-h">
+  <div class="wrap deal-grid">
+    <div>
+      <h2 class="mega disp" id="deal-h" data-i18n="deal.h">Bring 9 friends, the 10th goes free</h2>
+      <p class="lead" data-i18n="deal.sub">Varsity clubs, office teams, the cousins' group chat. Book 10 seats and one is on us. The saving is split so everyone pays less.</p>
+    </div>
+    <div class="calc">
+      <label class="field"><span data-i18n="deal.trip">Trip</span>
+        <select class="select" id="calc-trip"></select>
+      </label>
+      <div class="field">
+        <span id="size-l" data-i18n="deal.size">Group size</span>
+        <div class="stepper" role="group" aria-labelledby="size-l">
+          <button type="button" data-step="-1" aria-label="One less person">−</button>
+          <input id="calc-size" type="number" inputmode="numeric" min="2" max="60" value="10" aria-labelledby="size-l">
+          <button type="button" data-step="1" aria-label="One more person">+</button>
+        </div>
+      </div>
+      <div class="calc-out" aria-live="polite">
+        <p class="calc-each" id="calc-each"></p>
+        <p class="calc-note" id="calc-note"></p>
+      </div>
+      <button class="btn" type="button" id="quote-btn" data-i18n="deal.btn">GET A GROUP QUOTE</button>
+    </div>
+  </div>
+</section>
+
+<!-- 10. FAQ -->
+<section class="sec" id="faq" aria-labelledby="faq-h">
+  <div class="wrap faq-grid">
+    <div class="faq-side">
+      <h2 class="mega disp" id="faq-h" data-i18n="faq.h">Questions?</h2>
+      <p class="lead" data-i18n="faq.sub">Still stuck? Message us on WhatsApp. A real person in Dhaka replies, day or night.</p>
+    </div>
+    <div class="faq-list">
+      <details name="faq" open>
+        <summary><span data-i18n="faq.q1">Can I get a refund if plans change?</span><span class="pm" aria-hidden="true"></span></summary>
+        <p class="faq-a" data-i18n="faq.a1">Cancel 7 or more days before departure and you get everything back, except the ৳1,000 reservation, which becomes trip credit for 12 months. Cancel 3 to 6 days before and you get 50% back. Under 72 hours we can't refund, but you can hand your seat to a friend for free. If we cancel because of weather, permits or a hartal, you get 100% back to your bKash within 3 working days.</p>
+      </details>
+      <details name="faq">
+        <summary><span data-i18n="faq.q2">How does paying in parts with bKash work?</span><span class="pm" aria-hidden="true"></span></summary>
+        <p class="faq-a" data-i18n="faq.a2">Reserve your seat with ৳1,000. Pay the rest in up to 3 parts on bKash, Nagad, Rocket or card, with the last part due 72 hours before departure. We send a WhatsApp reminder before each one. No interest and no extra charge.</p>
+      </details>
+      <details name="faq">
+        <summary><span data-i18n="faq.q3">What's included in the price?</span><span class="pm" aria-hidden="true"></span></summary>
+        <p class="faq-a" data-i18n="faq.a3">Return transport from Dhaka, every night's stay, the meals listed on the trip, entry fees and permits, a Pothik trip leader and local guides. Not included: your own snacks, optional activities like paragliding in Pokhara, and tips. Every trip lists both, line by line.</p>
+      </details>
+      <details name="faq">
+        <summary><span data-i18n="faq.q4">Is it safe? Who are the guides?</span><span class="pm" aria-hidden="true"></span></summary>
+        <p class="faq-a" data-i18n="faq.a4">Every group has a trip leader trained in first aid and a licensed local guide. Mixed groups always have a female co-leader, and rooms are split by gender unless you book as a couple or a group of friends. Our 24/7 WhatsApp line reaches a real person in Dhaka, in Bangla or English.</p>
+      </details>
+      <details name="faq">
+        <summary><span data-i18n="faq.q5">Do groups get a discount?</span><span class="pm" aria-hidden="true"></span></summary>
+        <p class="faq-a" data-i18n="faq.a5">Book 10 seats and the 10th is free; book 20 and two are free. The saving is split across the group so everyone pays less. Groups of 5 to 9 get ৳300 off per person. Ask for a quote and we reply on WhatsApp within 2 hours, 9am to 11pm.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 11. FINAL CTA -->
+<section class="final dark" aria-labelledby="final-h">
+  <h2 id="final-h"><span class="t disp" data-i18n="final.h">READY?</span></h2>
+  <a class="btn btn--lg btn--on-dark" href="#trips" data-i18n="final.btn">PICK YOUR TRIP ↗</a>
+  <p class="mono" data-i18n="final.note">Next departure: Sajek Valley, Thu 3 Dec. 6 seats left.</p>
+</section>
+</main>
+
+<!-- 12. FOOTER -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <p class="logo" style="margin:0">POTHIK<sup>®</sup></p>
+        <address>Pothik Holidays Ltd.<br>Level 4, House 23, Road 11<br>Banani, Dhaka 1213</address>
+        <p class="lic">IATA · ATAB · TOAB licensed</p>
+        <div class="pay" aria-label="Payment methods we accept"><span>bKash</span><span>Nagad</span><span>Rocket</span><span>VISA</span><span>Mastercard</span></div>
+      </div>
+      <div><h3>Trips</h3><ul><li><a href="#trips">Sajek Valley</a></li><li><a href="#trips">Srimangal</a></li><li><a href="#trips">Sundarbans</a></li><li><a href="#trips">Nepal</a></li></ul></div>
+      <div><h3>Help</h3><ul><li><a href="#faq">FAQ</a></li><li><a href="#faq">Refund policy</a></li><li><a href="#faq">Safety</a></li><li><a href="#deal">Group quotes</a></li></ul></div>
+      <div><h3>Company</h3><ul><li><a href="#about">About us</a></li><li><a href="#about">Trip leaders</a></li><li><a href="#about">Careers</a></li><li><a href="#about">Press</a></li></ul></div>
+      <div><h3>Follow</h3><ul><li><a href="#moments">Instagram</a></li><li><a href="#moments">TikTok</a></li><li><a href="#moments">Facebook</a></li><li><a href="#moments">YouTube</a></li></ul></div>
+    </div>
+    <div class="foot-meta mono">
+      <span>© 2026 Pothik Holidays Ltd.</span>
+      <span>Photos: Unsplash</span>
+    </div>
+  </div>
+  <p class="wordmark" aria-hidden="true"><span class="t">POTHIK</span></p>
+</footer>
+
+<!-- BOOKING / QUOTE DIALOG -->
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <div class="dlg-head">
+    <h2 class="dlg-title" id="dlg-title">Reserve your seat</h2>
+    <button class="dlg-x" type="button" aria-label="Close">✕</button>
+  </div>
+  <div class="dlg-body">
+    <form id="dlg-form">
+      <p class="dlg-note" id="dlg-note"></p>
+      <label class="field"><span>Your name</span><input class="input" name="name" required autocomplete="name" placeholder=" "></label>
+      <label class="field"><span>WhatsApp number</span><input class="input" name="phone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="01XXX-XXXXXX" pattern="^(\+?88)?0?1[3-9][0-9\s\-]{8,10}$"><span class="hint">Bangladeshi mobile number, 11 digits.</span></label>
+      <label class="field"><span>Trip</span><select class="select" name="trip" id="dlg-trip"></select></label>
+      <label class="field" id="dlg-size-f"><span>Group size</span><input class="input" name="size" type="number" min="2" max="60" value="10"></label>
+      <button class="btn" type="submit" id="dlg-submit">RESERVE MY SEAT ↗</button>
+    </form>
+    <div class="dlg-done" id="dlg-done" role="status" hidden></div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var $ = function(s, r){ return (r||document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+
+  /* ---------- Mobile menu ---------- */
+  var menuBtn = $('.menu-btn'), panel = $('#nav-panel');
+  menuBtn.addEventListener('click', function(){
+    var open = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', String(!open));
+    panel.hidden = open;
+  });
+  $$('#nav-panel a').forEach(function(a){ a.addEventListener('click', function(){ menuBtn.setAttribute('aria-expanded','false'); panel.hidden = true; }); });
+
+  /* ---------- Fit giant type ---------- */
+  var hero = $('.hero'), heroInner = $('.hero-inner');
+  function fitHero(){
+    var W = heroInner.clientWidth;
+    var bn = document.documentElement.lang === 'bn';
+    var LH = bn ? 1.1 : 0.9;
+    heroInner.style.setProperty('--hero-lh', LH);
+    heroInner.style.setProperty('--hero-fs', '100px');
+    heroInner.style.setProperty('--hero-fs-top', '100px');
+    var w = $$('.hero-word .t', heroInner).map(function(t){ return t.getBoundingClientRect().width; });
+    var topW = Math.max(w[0], w[1]);
+    var navH = $('.nav').offsetHeight;
+    var vh = window.innerHeight;
+    var wide = W >= 640 && window.innerWidth > window.innerHeight * 0.95;
+    var fs = W / w[2] * 100 * 0.995, top;
+    if (wide){
+      var avail = vh - navH - 32 - 40 - 8;
+      fs = Math.min(fs, avail / (3 * LH));
+      top = fs;
+    } else {
+      top = Math.min(W / topW * 100 * 0.98, fs * (W >= 640 ? 1.5 : 1.75));
+    }
+    heroInner.style.setProperty('--hero-fs', fs.toFixed(2) + 'px');
+    heroInner.style.setProperty('--hero-fs-top', top.toFixed(2) + 'px');
+    heroInner.style.setProperty('--left-w', (topW * top / 100).toFixed(1) + 'px');
+    hero.classList.toggle('is-wide', wide);
+  }
+  function fitBox(box, maxH){
+    var t = $('.t', box); if (!t) return;
+    box.style.fontSize = '100px';
+    var avail = box.clientWidth - parseFloat(getComputedStyle(box).paddingLeft) - parseFloat(getComputedStyle(box).paddingRight);
+    var fs = avail / t.getBoundingClientRect().width * 100;
+    if (maxH) fs = Math.min(fs, maxH);
+    box.style.fontSize = fs.toFixed(2) + 'px';
+  }
+  function fitAll(){
+    fitHero();
+    fitBox($('.wordmark'));
+    var fin = $('.final h2');
+    fin.style.width = '100%';
+    fitBox(fin, window.innerHeight * 0.5);
+  }
+  var fitRaf;
+  function queueFit(){ cancelAnimationFrame(fitRaf); fitRaf = requestAnimationFrame(fitAll); }
+  window.addEventListener('resize', queueFit);
+  fitAll();
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
+
+  /* ---------- Interactive grid pattern (hero) ---------- */
+  (function(){
+    var cv = $('.hero-grid'), ctx = cv.getContext('2d');
+    var cell = 48, cols = 0, rows = 0, a = new Float32Array(0), hov = -1, w = 0, h = 0, dpr = 1, running = false, last = 0;
+    function size(){
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = hero.clientWidth; h = hero.clientHeight;
+      cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+      cell = w < 700 ? 40 : 48;
+      cols = Math.ceil(w / cell); rows = Math.ceil(h / cell);
+      a = new Float32Array(cols * rows); hov = -1;
+      draw();
+    }
+    function draw(){
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = '#FF4F1A';
+      for (var i = 0; i < a.length; i++){
+        if (a[i] > 0){ ctx.globalAlpha = a[i]; ctx.fillRect((i % cols) * cell, Math.floor(i / cols) * cell, cell, cell); }
+      }
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = 'rgba(17,17,17,.12)'; ctx.lineWidth = 1; ctx.beginPath();
+      for (var x = 0; x <= cols; x++){ ctx.moveTo(x*cell + .5, 0); ctx.lineTo(x*cell + .5, h); }
+      for (var y = 0; y <= rows; y++){ ctx.moveTo(0, y*cell + .5); ctx.lineTo(w, y*cell + .5); }
+      ctx.stroke();
+    }
+    function loop(t){
+      var dt = last ? t - last : 16; last = t;
+      var fade = reduce.matches ? 1 : 300, any = false;
+      for (var i = 0; i < a.length; i++){
+        if (i !== hov && a[i] > 0){ a[i] = Math.max(0, a[i] - dt / fade); if (a[i] > 0) any = true; }
+      }
+      draw();
+      if (any) requestAnimationFrame(loop); else { running = false; last = 0; }
+    }
+    function kick(){ if (!running){ running = true; requestAnimationFrame(loop); } }
+    hero.addEventListener('pointermove', function(e){
+      var r = hero.getBoundingClientRect();
+      var x = Math.floor((e.clientX - r.left) / cell), y = Math.floor((e.clientY - r.top) / cell);
+      if (x < 0 || y < 0 || x >= cols || y >= rows) return;
+      var idx = y * cols + x;
+      if (idx === hov) return;
+      hov = idx; a[idx] = 1; kick();
+    });
+    hero.addEventListener('pointerleave', function(){ hov = -1; kick(); });
+    if ('ResizeObserver' in window) new ResizeObserver(size).observe(hero); else window.addEventListener('resize', size);
+    size();
+  })();
+
+  /* ---------- Scroll-based velocity ticker ---------- */
+  (function(){
+    var rows = $$('.vel-row').map(function(r){
+      return { el:r, track:$('.vel-track', r), base:parseFloat(r.dataset.speed || 70) * (parseFloat(r.dataset.dir) || 1), x:0, dir:1, unitW:0 };
+    });
+    function build(){
+      rows.forEach(function(s){
+        var units = $$('.vel-unit', s.track);
+        units.slice(1).forEach(function(u){ u.remove(); });
+        s.unitW = units[0].getBoundingClientRect().width || 1;
+        var need = Math.ceil(window.innerWidth / s.unitW) + 2;
+        for (var i = 1; i < need; i++){ s.track.appendChild(units[0].cloneNode(true)); }
+      });
+    }
+    var lastY = window.scrollY, lastT = performance.now(), raw = 0, smooth = 0, lastScroll = 0;
+    window.addEventListener('scroll', function(){
+      var t = performance.now(), dt = Math.max(t - lastT, 1);
+      raw = (window.scrollY - lastY) / dt * 1000; lastY = window.scrollY; lastT = t; lastScroll = t;
+    }, { passive:true });
+    var prev = 0, raf = 0, visible = true;
+    function tick(t){
+      var dt = prev ? Math.min((t - prev) / 1000, 0.05) : 0; prev = t;
+      if (t - lastScroll > 90) raw = 0;
+      smooth += (raw - smooth) * Math.min(1, dt * 14);
+      var vf = Math.max(-6, Math.min(6, smooth / 1000 * 5));
+      rows.forEach(function(s){
+        if (vf < -0.01) s.dir = -1; else if (vf > 0.01) s.dir = 1;
+        var move = s.dir * s.base * dt;
+        move += s.dir * move * vf;
+        s.x += move;
+        s.x = s.x % s.unitW; if (s.x > 0) s.x -= s.unitW;
+        s.track.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
+      });
+      raf = requestAnimationFrame(tick);
+    }
+    function start(){ if (!raf && visible && !reduce.matches){ prev = 0; raf = requestAnimationFrame(tick); } }
+    function stop(){ cancelAnimationFrame(raf); raf = 0; }
+    function setup(){
+      if (reduce.matches){ stop(); rows.forEach(function(s){ s.track.style.transform = 'none'; }); return; }
+      build(); start();
+    }
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ visible = es[0].isIntersecting; visible ? start() : stop(); }).observe($('.ticker'));
+    }
+    var rb; window.addEventListener('resize', function(){ clearTimeout(rb); rb = setTimeout(function(){ if (!reduce.matches) build(); }, 150); });
+    if (reduce.addEventListener) reduce.addEventListener('change', setup);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setup); else setup();
+  })();
+
+  /* ---------- Trips rail: buttons, progress, drag ---------- */
+  (function(){
+    var rail = $('.rail'), bar = $('.rail-bar span'), prevB = $('[data-rail="prev"]'), nextB = $('[data-rail="next"]');
+    function step(){ var c = $('.trip', rail); return c ? c.getBoundingClientRect().width + 24 : 300; }
+    function upd(){
+      var max = rail.scrollWidth - rail.clientWidth;
+      var vis = rail.clientWidth / rail.scrollWidth;
+      var p = max > 0 ? rail.scrollLeft / max : 1;
+      bar.style.transform = 'scaleX(' + Math.min(1, vis + (1 - vis) * p).toFixed(3) + ')';
+      prevB.disabled = rail.scrollLeft < 4;
+      nextB.disabled = rail.scrollLeft > max - 4;
+    }
+    var beh = function(){ return reduce.matches ? 'auto' : 'smooth'; };
+    prevB.addEventListener('click', function(){ rail.scrollBy({ left:-step(), behavior:beh() }); });
+    nextB.addEventListener('click', function(){ rail.scrollBy({ left: step(), behavior:beh() }); });
+    rail.addEventListener('scroll', upd, { passive:true });
+    window.addEventListener('resize', upd);
+    upd();
+    var down = false, moved = false, sx = 0, sl = 0;
+    rail.addEventListener('pointerdown', function(e){
+      if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,a')) return;
+      down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft;
+    });
+    window.addEventListener('pointermove', function(e){
+      if (!down) return;
+      var dx = e.clientX - sx;
+      if (!moved && Math.abs(dx) > 5){ moved = true; rail.classList.add('dragging'); }
+      if (moved) rail.scrollLeft = sl - dx;
+    });
+    window.addEventListener('pointerup', function(){
+      if (!down) return; down = false;
+      if (moved){
+        var x = rail.scrollLeft; rail.classList.remove('dragging');
+        rail.scrollLeft = x;
+        var s = step(); rail.scrollTo({ left: Math.round(x / s) * s, behavior:beh() });
+      }
+    });
+  })();
+
+  /* ---------- Instagram likes ---------- */
+  $$('.ig-like').forEach(function(b){
+    b.addEventListener('click', function(){
+      var on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      var n = $('.n', b.closest('.ig')), base = +n.dataset.base;
+      n.textContent = (base + (on ? 1 : 0)).toLocaleString('en-US');
+      b.classList.remove('pop'); void b.offsetWidth; if (on) b.classList.add('pop');
+    });
+  });
+
+  /* ---------- Trips data (read from the cards) ---------- */
+  var trips = $$('.trip').map(function(c){ return { id:c.dataset.id, name:c.dataset.name, price:+c.dataset.price }; });
+  function fillSelect(sel){
+    sel.innerHTML = '';
+    trips.forEach(function(t){
+      var o = document.createElement('option');
+      o.value = t.id; o.textContent = t.name + ', ৳' + t.price.toLocaleString('en-IN');
+      sel.appendChild(o);
+    });
+  }
+  var calcTrip = $('#calc-trip'), calcSize = $('#calc-size');
+  fillSelect(calcTrip); fillSelect($('#dlg-trip'));
+
+  /* ---------- Group calculator ---------- */
+  function money(n){ return (document.documentElement.lang === 'bn' ? n.toLocaleString('bn-BD') : n.toLocaleString('en-IN')).replace(/^/, '৳'); }
+  function bigMoney(n){ return '<span class="tk">৳</span>' + (document.documentElement.lang === 'bn' ? n.toLocaleString('bn-BD') : n.toLocaleString('en-IN')); }
+  function num(n){ return document.documentElement.lang === 'bn' ? n.toLocaleString('bn-BD') : String(n); }
+  function calc(){
+    var bn = document.documentElement.lang === 'bn';
+    var n = Math.max(2, Math.min(60, parseInt(calcSize.value, 10) || 2));
+    var t = trips.filter(function(x){ return x.id === calcTrip.value; })[0] || trips[0];
+    var free = n >= 10 ? Math.floor(n / 10) : 0;
+    var off = (n >= 5 && n < 10) ? 300 : 0;
+    var total = (n - free) * t.price - off * n;
+    var each = Math.ceil(total / n / 10) * 10;
+    $('#calc-each').innerHTML = bigMoney(each) + '<small>' + (bn ? 'জনপ্রতি' : 'each') + '</small>';
+    var note;
+    if (free){
+      note = bn ? (num(free) + 'টা সিট ফ্রি। ' + num(n) + ' জনের গ্রুপ দেবে ' + money(total) + ', ছাড়া হতো ' + money(n * t.price) + '।')
+                : (free + ' free ' + (free > 1 ? 'seats' : 'seat') + '. Your group of ' + n + ' pays ' + money(total) + ' instead of ' + money(n * t.price) + '.');
+    } else if (off){
+      note = bn ? ('জনপ্রতি ৳৩০০ ছাড়। আর ' + num(10 - n) + ' জন আনলে একটা সিট ফ্রি।')
+                : ('৳300 off each. Add ' + (10 - n) + ' more and one seat is free.');
+    } else {
+      note = bn ? ('৫ জন বা তার বেশি হলে জনপ্রতি ৳৩০০ ছাড়। আর ' + num(5 - n) + ' জন দরকার।')
+                : ('Groups of 5 or more save ৳300 each. Add ' + (5 - n) + ' more to unlock it.');
+    }
+    $('#calc-note').textContent = note;
+  }
+  calcTrip.addEventListener('change', calc);
+  calcSize.addEventListener('input', calc);
+  calcSize.addEventListener('change', function(){ calcSize.value = Math.max(2, Math.min(60, parseInt(calcSize.value, 10) || 2)); calc(); });
+  $$('[data-step]').forEach(function(b){
+    b.addEventListener('click', function(){
+      calcSize.value = Math.max(2, Math.min(60, (parseInt(calcSize.value, 10) || 2) + (+b.dataset.step)));
+      calc();
+    });
+  });
+  calc();
+
+  /* ---------- Booking / quote dialog ---------- */
+  var dlg = $('#dlg'), form = $('#dlg-form'), done = $('#dlg-done'), opener = null, mode = 'reserve';
+  function openDlg(m, tripId, size){
+    mode = m; opener = document.activeElement;
+    form.hidden = false; done.hidden = true; form.reset();
+    $('#dlg-trip').value = tripId || trips[0].id;
+    var sizeF = $('#dlg-size-f');
+    if (m === 'group'){
+      $('#dlg-title').textContent = 'Get a group quote';
+      $('#dlg-note').textContent = 'Tell us who is coming. We reply on WhatsApp within 2 hours, 9am to 11pm, with a fixed group price.';
+      $('#dlg-submit').textContent = 'GET A GROUP QUOTE ↗';
+      sizeF.hidden = false; $('input', sizeF).value = size || 10;
+    } else {
+      $('#dlg-title').textContent = 'Reserve your seat';
+      $('#dlg-note').textContent = 'We send a ৳1,000 bKash payment request to your WhatsApp. Your seat is held for 2 hours while you pay.';
+      $('#dlg-submit').textContent = 'RESERVE MY SEAT ↗';
+      sizeF.hidden = true;
+    }
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open','');
+  }
+  $$('[data-book]').forEach(function(b){ b.addEventListener('click', function(){ openDlg('reserve', b.dataset.book); }); });
+  $('#quote-btn').addEventListener('click', function(){ openDlg('group', calcTrip.value, calcSize.value); });
+  $('.dlg-x').addEventListener('click', function(){ dlg.close(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', function(){ if (opener && opener.focus) opener.focus(); });
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!form.checkValidity()){ form.reportValidity(); return; }
+    var fd = new FormData(form);
+    var t = trips.filter(function(x){ return x.id === fd.get('trip'); })[0];
+    var name = String(fd.get('name')).trim().split(' ')[0];
+    var msg;
+    if (mode === 'group'){
+      msg = '<b>Quote requested.</b>Thanks, ' + escapeHtml(name) + '. We\u2019ll message ' + escapeHtml(String(fd.get('phone'))) + ' on WhatsApp within 2 hours with a fixed price for ' + escapeHtml(String(fd.get('size'))) + ' people on ' + escapeHtml(t.name) + '.';
+    } else {
+      msg = '<b>Seat requested.</b>Thanks, ' + escapeHtml(name) + '. Look out for a WhatsApp message to ' + escapeHtml(String(fd.get('phone'))) + ' with your ৳1,000 bKash payment request for ' + escapeHtml(t.name) + '.';
+    }
+    done.innerHTML = msg + '<p style="margin-top:24px"><button class="btn btn--sm" type="button" id="dlg-ok">DONE</button></p>';
+    form.hidden = true; done.hidden = false;
+    $('#dlg-ok').addEventListener('click', function(){ dlg.close(); });
+    $('#dlg-ok').focus();
+  });
+  function escapeHtml(s){ return s.replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+
+  /* ---------- EN | বাংলা ---------- */
+  var BN = {
+    'nav.trips':'ট্রিপ', 'nav.deals':'ডিল', 'nav.stories':'গল্প', 'nav.about':'আমাদের কথা', 'nav.book':'বুক করো ↗',
+    'hero.go':'চলো।', 'hero.see':'দেখো।', 'hero.bd':'বাংলাদেশ।',
+    'hero.cta':'ট্রিপ<br>বুক করো ↗',
+    'hero.line':'উইকেন্ড ট্রিপ ৳৫,৮০০ থেকে। বোরিং আইটিনেরারি নেই। পেমেন্ট বিকাশে।',
+    'trips.h':'ট্রিপ →', 'trips.sub':'ফিক্সড দাম। ঢাকা থেকে যাতায়াত, থাকা, খাওয়া আর ট্রিপ লিডার, সব ইনক্লুডেড।',
+    'card.book':'বুক ↗',
+    'num.1':'লুকানো চার্জ। কোনোদিনও না।', 'num.2':'হোয়াটসঅ্যাপে বাংলায় সাপোর্ট', 'num.3':'ট্রিপ বুক করেছে ২৫-এর নিচের ট্রাভেলাররা',
+    'how.h':'কীভাবে কাজ করে',
+    'how.1t':'ট্রিপ বেছে নাও', 'how.1d':'ফিক্সড দামের ট্রিপ দেখো। কার্ডে যে দাম, সেটাই দেবে: যাতায়াত, থাকা, খাওয়া আর গাইড সহ।',
+    'how.2t':'বিকাশে ৳১,০০০ দিয়ে রিজার্ভ করো', 'how.2d':'এক মিনিটে সিট লক করো। বাকি টাকা যাত্রার আগে সর্বোচ্চ ৩ ভাগে দাও।',
+    'how.3t':'ব্যাগ গোছাও', 'how.3d':'তোমাকে ট্রিপের হোয়াটসঅ্যাপ গ্রুপে অ্যাড করা হবে। সেখানে থাকবে লিডার, প্যাকিং লিস্ট আর পিকআপ পয়েন্ট।',
+    'proof.pay':'পেমেন্ট', 'proof.lic':'লাইসেন্স',
+    'moments.sub':'সত্যিকারের ট্রিপ, সত্যিকারের ট্রাভেলারদের পোস্ট। #pothikmoments ট্যাগ করো, তোমার ছবিও রিপোস্ট হতে পারে।',
+    'deal.h':'৯ জন বন্ধু আনো, দশম জন ফ্রি',
+    'deal.sub':'ভার্সিটির ক্লাব, অফিসের টিম, কাজিনদের গ্রুপ চ্যাট। ১০টা সিট বুক করো, একটা আমাদের পক্ষ থেকে। সাশ্রয় সবার মধ্যে ভাগ হয়, তাই সবাই কম দেয়।',
+    'deal.trip':'ট্রিপ', 'deal.size':'গ্রুপে কতজন', 'deal.btn':'গ্রুপ কোট নাও',
+    'faq.h':'প্রশ্ন আছে?', 'faq.sub':'আরও কিছু জানার আছে? হোয়াটসঅ্যাপে মেসেজ দাও। দিন হোক বা রাত, ঢাকা থেকে একজন মানুষ উত্তর দেবে।',
+    'faq.q1':'প্ল্যান বদলালে কি টাকা ফেরত পাব?',
+    'faq.a1':'যাত্রার ৭ দিন বা তার আগে ক্যানসেল করলে সব টাকা ফেরত, শুধু ৳১,০০০ রিজার্ভেশন ১২ মাসের ট্রিপ ক্রেডিট হয়ে থাকবে। ৩ থেকে ৬ দিন আগে করলে ৫০% ফেরত। ৭২ ঘণ্টার কম বাকি থাকলে টাকা ফেরত দিতে পারি না, তবে তোমার সিট কোনো বন্ধুকে ফ্রিতে দিয়ে দিতে পারো। আবহাওয়া, পারমিট বা হরতালের কারণে আমরা ট্রিপ বাতিল করলে ৩ কর্মদিবসের মধ্যে পুরো টাকা তোমার বিকাশে ফেরত।',
+    'faq.q2':'বিকাশে কিস্তিতে পেমেন্ট কীভাবে হয়?',
+    'faq.a2':'৳১,০০০ দিয়ে সিট রিজার্ভ করো। বাকিটা সর্বোচ্চ ৩ ভাগে দাও, বিকাশ, নগদ, রকেট বা কার্ডে। শেষ কিস্তি যাত্রার ৭২ ঘণ্টা আগে। প্রতিটা কিস্তির আগে হোয়াটসঅ্যাপে রিমাইন্ডার পাবে। কোনো সুদ নেই, বাড়তি চার্জ নেই।',
+    'faq.q3':'দামের মধ্যে কী কী আছে?',
+    'faq.a3':'ঢাকা থেকে আসা-যাওয়া, সব রাতের থাকা, ট্রিপে লেখা সব খাবার, এন্ট্রি ফি ও পারমিট, পথিক ট্রিপ লিডার আর লোকাল গাইড। যা নেই: নিজের স্ন্যাকস, ঐচ্ছিক অ্যাক্টিভিটি (যেমন পোখারায় প্যারাগ্লাইডিং) আর বখশিশ। প্রতিটা ট্রিপে দুটো তালিকাই লাইন ধরে দেওয়া আছে।',
+    'faq.q4':'ট্রিপ কি নিরাপদ? গাইড কারা?',
+    'faq.a4':'প্রতিটা গ্রুপে থাকে ফার্স্ট-এইড ট্রেনিং পাওয়া একজন ট্রিপ লিডার আর একজন লাইসেন্সধারী লোকাল গাইড। মিক্সড গ্রুপে সবসময় একজন নারী কো-লিডার থাকেন, আর কাপল বা বন্ধুদের গ্রুপ ছাড়া রুম ছেলে-মেয়ে আলাদা। আমাদের ২৪/৭ হোয়াটসঅ্যাপ লাইনে ঢাকা থেকে একজন মানুষ উত্তর দেয়, বাংলায় বা ইংরেজিতে।',
+    'faq.q5':'গ্রুপে গেলে কি ডিসকাউন্ট আছে?',
+    'faq.a5':'১০টা সিট বুক করলে দশমটা ফ্রি, ২০টায় দুটো। সেই সাশ্রয় পুরো গ্রুপে ভাগ হয়, তাই সবার খরচ কমে। ৫ থেকে ৯ জনের গ্রুপে জনপ্রতি ৳৩০০ ছাড়। কোট চাইলে সকাল ৯টা থেকে রাত ১১টার মধ্যে ২ ঘণ্টায় হোয়াটসঅ্যাপে উত্তর দিই।',
+    'final.h':'রেডি?', 'final.btn':'ট্রিপ বেছে নাও ↗', 'final.note':'পরের যাত্রা: সাজেক ভ্যালি, বৃহস্পতিবার ৩ ডিসেম্বর। ৬টা সিট বাকি।'
+  };
+  var EN = {};
+  $$('[data-i18n]').forEach(function(el){ if (!(el.dataset.i18n in EN)) EN[el.dataset.i18n] = el.innerHTML; });
+  function setLang(l){
+    document.documentElement.lang = l;
+    var d = l === 'bn' ? BN : EN;
+    $$('[data-i18n]').forEach(function(el){ var v = d[el.dataset.i18n]; if (v != null) el.innerHTML = v; });
+    $$('.lang button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.lang === l)); });
+    calc();
+    fitAll();
+    if (document.fonts && document.fonts.load){
+      document.fonts.load('700 100px "Hind Siliguri"', 'চলো দেখো বাংলাদেশ').then(fitAll);
+    }
+  }
+  $$('.lang button').forEach(function(b){ b.addEventListener('click', function(){ setLang(b.dataset.lang); }); });
+})();
+</script>
+</body>
+</html>
