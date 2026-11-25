@@ -14,17 +14,22 @@
   /* If a photo fails to load, swap it for a coloured block with the place name. */
   window.phFail = function (img) {
     var box = document.createElement('div');
-    box.className = 'ph ph--' + (img.dataset.tone || 'green');
+    box.className = 'ph ph--' + (img.dataset.tone || 'blue');
     box.setAttribute('role', 'img');
     box.setAttribute('aria-label', img.alt);
     box.textContent = img.dataset.place || img.alt;
     img.replaceWith(box);
   };
+  /* Scroll reveals: content starts hidden only when JavaScript is running; if the reveal code
+     hasn't started within 3 seconds, everything is shown anyway. */
+  document.documentElement.classList.add('js-reveal');
+  setTimeout(function(){ if (!window.__revealReady) document.documentElement.classList.remove('js-reveal'); }, 3000);
 </script>
 <style>
 /* ============ TOKENS ============ */
 :root{
-  --bg:#F3EFE6; --ink:#111111; --orange:#FF4F1A; --green:#0F5B4A;
+  --bg:#F3EFE6; --ink:#111111; --pink:#F67280; --mauve:#C06C84; --plum:#6C5B7B; --blue:#355C7D;
+  --hot:#FF4F1A; /* interaction colour: hero grid squares and trip-card hover */
   --rule:3px solid var(--ink);
   --sh:6px 6px 0 var(--ink);
   --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:40px; --s6:48px; --s8:64px; --s10:80px; --s12:96px;
@@ -34,8 +39,11 @@
   --f-body:'Space Grotesk','Hind Siliguri',system-ui,sans-serif;
   --f-mono:'JetBrains Mono','Hind Siliguri',ui-monospace,monospace;
   --f-bn:'Hind Siliguri','Noto Sans Bengali',sans-serif;
-  --focus:var(--green);
-  --snap:90ms cubic-bezier(.2,0,0,1);
+  --focus:var(--blue);
+  /* One speed and one easing for every transition and reveal on the page (JS reads these too). */
+  --dur:250ms; --ease:cubic-bezier(.2,0,0,1);
+  --snap:var(--dur) var(--ease);
+  --nav-h-small:56px;
 }
 @media (min-width:700px){ :root{ --pad:32px; } }
 @media (min-width:1200px){ :root{ --pad:48px; } }
@@ -47,6 +55,7 @@ img{ display:block; max-width:100%; }
 a{ color:inherit; }
 button,input,select{ font:inherit; color:inherit; }
 :focus-visible{ outline:3px solid var(--focus); outline-offset:3px; }
+[hidden]{ display:none!important; }
 .vh{ position:absolute!important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .skip{ position:absolute; left:var(--pad); top:-64px; z-index:100; background:var(--ink); color:var(--bg); padding:var(--s1) var(--s2); font-weight:700; text-decoration:none; }
 .skip:focus{ top:var(--s1); }
@@ -60,7 +69,7 @@ button,input,select{ font:inherit; color:inherit; }
 .sec-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:var(--s3); flex-wrap:wrap; margin-bottom:var(--s5); }
 .sec-head .lead{ margin-top:var(--s2); }
 .dark{ --focus:var(--bg); }
-.on-orange{ --focus:var(--ink); }
+.on-pink{ --focus:var(--ink); }
 
 /* Bangla mode */
 html[lang="bn"] [data-i18n]{ font-family:var(--f-bn); }
@@ -68,63 +77,91 @@ html[lang="bn"] .disp[data-i18n]{ font-weight:700; line-height:1.12; letter-spac
 
 /* Photo fallback block */
 .ph{ width:100%; height:100%; min-height:160px; display:flex; align-items:flex-end; padding:var(--s2); font-family:var(--f-display); font-size:clamp(28px,4vw,48px); line-height:.9; text-transform:uppercase; }
-.ph--green{ background:var(--green); color:var(--bg); }
-.ph--orange{ background:var(--orange); color:var(--ink); }
+.ph--blue{ background:var(--blue); color:var(--bg); }
+.ph--pink{ background:var(--pink); color:var(--ink); }
 .ph--ink{ background:var(--ink); color:var(--bg); }
 
 /* ============ BUTTONS (brutalist press) ============ */
+/* Every button: 3px #111 border, 6px 6px 0 shadow; hover lifts up-left 2px, press sinks into the shadow.
+   --press-sh is the shadow colour (#111, cream only on the black final panel where #111 would vanish). */
+:where(.btn,.btn-round,.sq-btn,.menu-btn,.dlg-x,.stepper button,.lang){
+  --press-sh:var(--ink);
+  border:var(--rule); box-shadow:6px 6px 0 var(--press-sh);
+  transition:transform var(--snap), box-shadow var(--snap), background-color var(--snap), color var(--snap), opacity var(--snap);
+}
+@media (hover:hover){
+  :where(.btn,.btn-round,.sq-btn,.menu-btn,.dlg-x,.stepper button):hover:not(:disabled){ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--press-sh); }
+}
+:where(.btn,.btn-round,.sq-btn,.menu-btn,.dlg-x,.stepper button):active:not(:disabled){ transform:translate(6px,6px); box-shadow:0 0 0 var(--press-sh); }
 .btn{
-  --btn-bg:var(--orange); --btn-fg:var(--ink); --btn-sh:var(--ink);
+  --btn-bg:var(--pink); --btn-fg:var(--ink);
   display:inline-flex; align-items:center; justify-content:center; gap:var(--s1);
   font-family:var(--f-body); font-weight:700; font-size:16px; letter-spacing:.04em; text-transform:uppercase; line-height:1.1;
   text-decoration:none; white-space:nowrap; cursor:pointer;
-  background:var(--btn-bg); color:var(--btn-fg); border:var(--rule); box-shadow:6px 6px 0 var(--btn-sh);
+  background:var(--btn-bg); color:var(--btn-fg);
   padding:var(--s2) var(--s3);
-  transition:transform var(--snap), box-shadow var(--snap), background-color var(--snap);
 }
-.btn:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--btn-sh); }
-.btn:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--btn-sh); }
 .btn--sm{ font-size:14px; padding:var(--s1) var(--s2); }
 .btn--cream{ --btn-bg:var(--bg); }
-.btn--on-dark{ --btn-sh:var(--bg); }
+.btn--on-dark{ --press-sh:var(--bg); }
 .btn--lg{ font-size:clamp(18px,2vw,24px); padding:var(--s3) var(--s4); }
 html[lang="bn"] .btn{ letter-spacing:0; }
 
 /* ============ NAV ============ */
-.nav{ position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:var(--rule); }
-.nav-in{ display:flex; align-items:center; gap:var(--s2); height:var(--nav-h); padding:0 var(--pad); }
-.logo{ font-family:var(--f-display); font-size:28px; line-height:1; text-decoration:none; letter-spacing:.01em; margin-right:auto; }
+/* Sticky bar with a 3px rule. When it shrinks, a transparent margin of the same size grows underneath,
+   so the page below never moves. */
+.nav{ position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:var(--rule); margin-bottom:0; transition:margin-bottom var(--snap); }
+.nav-in{ display:flex; align-items:center; gap:var(--s2); height:var(--nav-h); padding:0 var(--pad); transition:height var(--snap); }
+.nav.is-small{ margin-bottom:calc(var(--nav-h) - var(--nav-h-small)); }
+.nav.is-small .nav-in{ height:var(--nav-h-small); }
+.logo{ font-family:var(--f-display); font-size:28px; line-height:1; text-decoration:none; letter-spacing:.01em; margin-right:auto; transform-origin:left center; transition:transform var(--snap); }
+.nav.is-small .logo{ transform:scale(.82); }
+.nav-sentinel{ position:absolute; top:0; left:0; width:1px; height:32px; pointer-events:none; }
 .logo sup{ font-family:var(--f-body); font-size:.42em; font-weight:700; vertical-align:top; position:relative; top:2px; }
 .nav-links{ display:none; list-style:none; gap:var(--s4); }
 .nav-links a{ display:block; font-weight:700; font-size:15px; letter-spacing:.05em; text-decoration:none; padding:var(--s1) 0; border-bottom:3px solid transparent; transition:border-color var(--snap); }
-.nav-links a:hover{ border-bottom-color:var(--orange); }
-.lang{ display:none; border:var(--rule); }
+.nav-links a:hover{ border-bottom-color:var(--pink); }
+.lang{ display:none; }
 .lang button{ background:none; border:0; padding:6px var(--s1); font-family:var(--f-mono); font-size:13px; font-weight:700; cursor:pointer; min-height:36px; }
 .lang button + button{ border-left:var(--rule); font-family:var(--f-bn); font-size:14px; }
 .lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
-.menu-btn{ background:var(--bg); border:var(--rule); font-family:var(--f-mono); font-weight:700; font-size:13px; padding:0 var(--s2); height:40px; cursor:pointer; }
+.menu-btn{ background:var(--bg); font-family:var(--f-mono); font-weight:700; font-size:13px; padding:0 var(--s2); height:40px; cursor:pointer; }
 .menu-btn[aria-expanded="true"]{ background:var(--ink); color:var(--bg); }
-.nav-panel{ border-top:var(--rule); padding:var(--s3) var(--pad) var(--s4); background:var(--bg); }
-.nav-panel ul{ list-style:none; margin-bottom:var(--s3); }
-.nav-panel li a{ display:block; font-family:var(--f-display); font-size:48px; line-height:1.05; text-decoration:none; text-transform:uppercase; border-bottom:var(--rule); padding:var(--s1) 0; }
-.nav-panel .lang{ display:inline-flex; }
-@media (min-width:600px){ .nav-in .lang{ display:flex; } .nav-panel .lang{ display:none; } .logo{ font-size:32px; } }
+/* Full-screen mobile menu: sits under the bar (which keeps the CLOSE button), giant Anton links */
+.menu{ position:fixed; inset:0; z-index:45; display:flex; flex-direction:column; justify-content:space-between; gap:var(--s5);
+  background:var(--bg); padding:calc(var(--nav-h) + 3px + var(--s3)) var(--pad) var(--s5); overflow-y:auto; overscroll-behavior:contain;
+  visibility:hidden; opacity:0; transition:opacity var(--snap), visibility 0s linear var(--dur); }
+.menu.is-open{ visibility:visible; opacity:1; transition:opacity var(--snap); }
+.menu-links{ list-style:none; border-top:var(--rule); counter-reset:m; }
+.menu-links a{ display:flex; align-items:flex-start; gap:var(--s2); padding:var(--s1) 0; border-bottom:var(--rule); text-decoration:none;
+  font-family:var(--f-display); font-size:clamp(64px,19vw,140px); line-height:.95; text-transform:uppercase; transition:background-color var(--snap), padding var(--snap); }
+.menu-links a::before{ counter-increment:m; content:"0" counter(m); font-family:var(--f-mono); font-size:14px; font-weight:700; line-height:1; padding-top:.6em; }
+.menu-links a:hover,.menu-links a:focus-visible{ background:var(--pink); padding-left:var(--s2); }
+html[lang="bn"] .menu-links a{ font-family:var(--f-bn); font-weight:700; line-height:1.15; }
+.menu-foot{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--s3); }
+.menu .lang{ display:inline-flex; }
+.menu.is-open .menu-links li,.menu.is-open .menu-foot{ animation:reveal var(--snap) var(--d,0ms) backwards; }
+html.menu-open body{ overflow:hidden; }   /* lock on body: locking <html> breaks the sticky bar in Chrome */
+@media (min-width:600px){ .nav-in .lang{ display:flex; } .menu .lang{ display:none; } .logo{ font-size:32px; } }
 @media (min-width:960px){
   .nav-in{ gap:var(--s4); }
   .nav-links{ display:flex; margin-right:var(--s1); }
   .logo{ margin-right:auto; }
-  .menu-btn,.nav-panel{ display:none!important; }
+  .menu-btn,.menu{ display:none!important; }
 }
 
 /* ============ HERO ============ */
 .hero{ position:relative; overflow:hidden; border-bottom:var(--rule); min-height:calc(100svh - var(--nav-h) - 3px); display:flex; align-items:flex-end; padding:var(--s4) var(--pad) var(--s5); touch-action:pan-y; }
-.hero-grid{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+.hero-grid{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; --grid-fill:var(--hot); --grid-line:rgba(17,17,17,.15); }
 .hero-inner{ position:relative; z-index:1; width:100%; --hero-fs:18vw; --hero-fs-top:18vw; --hero-lh:.9; }
 .hero h1{ font-weight:400; }
 .hero-word{ display:block; font-family:var(--f-display); text-transform:uppercase; line-height:var(--hero-lh); white-space:nowrap; letter-spacing:-.005em; }
 .hero-word .t{ display:inline-block; }
+@supports (paint-order:stroke fill){
+  .hero-word .t{ -webkit-text-stroke:max(8px,.07em) var(--bg); paint-order:stroke fill; }
+}
 .hw-go,.hw-see{ font-size:var(--hero-fs-top); }
-.hw-bd{ font-size:var(--hero-fs); color:var(--orange); }
+.hw-bd{ font-size:var(--hero-fs); color:var(--pink); }
 html[lang="bn"] .hero-word .t{ font-weight:700; }
 html[lang="bn"] .hero-word,html[lang="bn"] .final h2{ font-family:var(--f-bn); font-weight:700; }
 html[lang="bn"] .hero-word .t,html[lang="bn"] .final h2 .t{ line-height:inherit; }
@@ -132,19 +169,16 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 .tk{ font-family:var(--f-bn); font-weight:700; }
 .num b,.price,.calc-each{ white-space:nowrap; }
 .hero-side{ position:relative; margin-top:var(--s4); display:flex; flex-direction:column; }
-.hero-photo{ position:relative; flex:1; min-height:0; aspect-ratio:4/3; margin-right:var(--s1); border:var(--rule); box-shadow:var(--sh); background:var(--green); transform:rotate(1.5deg); }
+.hero-photo{ position:relative; flex:1; min-height:0; aspect-ratio:4/3; margin-right:var(--s1); border:var(--rule); box-shadow:var(--sh); background:var(--blue); transform:rotate(1.5deg); }
 .hero-photo img,.hero-photo .ph{ width:100%; height:100%; object-fit:cover; }
 .hero-photo .tag{ position:absolute; left:-3px; top:var(--s2); background:var(--ink); color:var(--bg); padding:4px var(--s1); }
 .hero-line{ margin-top:var(--s4); padding-right:128px; font-size:clamp(17px,1.5vw,21px); font-weight:500; max-width:34ch; }
 .btn-round{
   position:absolute; right:var(--s1); bottom:calc(-1 * var(--s5)); z-index:2;
   width:120px; height:120px; border-radius:50%; display:grid; place-items:center; text-align:center;
-  background:var(--ink); color:var(--bg); border:3px solid var(--ink); box-shadow:6px 6px 0 var(--orange);
+  background:var(--pink); color:var(--ink);
   font-weight:700; font-size:15px; line-height:1.15; letter-spacing:.04em; text-decoration:none;
-  transition:transform var(--snap), box-shadow var(--snap), background-color var(--snap), color var(--snap);
 }
-.btn-round:hover{ background:var(--orange); color:var(--ink); box-shadow:8px 8px 0 var(--ink); transform:translate(-2px,-2px); }
-.btn-round:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--ink); }
 @media (min-width:700px){ .hero-photo{ aspect-ratio:2/1; transform:rotate(2.5deg); } .btn-round{ width:144px; height:144px; font-size:17px; } .hero-line{ padding-right:168px; } }
 /* side-by-side layout, set by JS when the screen is wide */
 .hero.is-wide .hero-side{ position:absolute; top:0; right:0; margin:0; width:min(calc(100% - var(--left-w, 45%) - var(--s5)), 760px); height:calc(var(--hero-fs-top) * var(--hero-lh) * 2 - var(--s2)); }
@@ -154,19 +188,20 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 /* ============ VELOCITY TICKER ============ */
 .ticker{ background:var(--ink); color:var(--bg); border-bottom:var(--rule); padding:var(--s2) 0; overflow:hidden; }
 .vel-row{ overflow:hidden; white-space:nowrap; }
-.vel-track{ display:inline-flex; will-change:transform; }
-.vel-unit{ display:inline-flex; align-items:center; font-family:var(--f-display); font-size:clamp(64px,10vw,168px); line-height:1.02; text-transform:uppercase; padding-right:.2em; }
-.vel-unit .star{ width:.5em; height:.5em; margin:0 .28em; flex:none; color:var(--orange); }
-.vel-row--alt{ color:var(--orange); }
+.vel-track{ display:inline-flex; will-change:transform; backface-visibility:hidden; }
+.vel-unit{ display:inline-flex; align-items:center; font-family:var(--f-display); font-size:clamp(64px,10vw,168px); line-height:1.02; text-transform:uppercase; flex:none; }
+.vel-unit .star{ width:.5em; height:.5em; margin:0 .28em; flex:none; color:var(--pink); }
+.vel-row--alt{ color:var(--pink); }
 .vel-row--alt .star{ color:var(--bg); }
 
 /* ============ TRIPS ============ */
 .rail-ctrl{ display:flex; align-items:center; gap:var(--s2); }
-.sq-btn{ width:56px; height:56px; display:grid; place-items:center; background:var(--bg); border:var(--rule); box-shadow:var(--sh); cursor:pointer; font-size:24px; font-weight:700; transition:transform var(--snap), box-shadow var(--snap), opacity var(--snap); }
-.sq-btn:hover{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--ink); }
-.sq-btn:active{ transform:translate(6px,6px); box-shadow:0 0 0 var(--ink); }
-.sq-btn:disabled{ opacity:.3; cursor:default; transform:none; box-shadow:var(--sh); }
-.rail{ display:flex; gap:var(--s3); overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding-inline:var(--pad); padding:0 var(--pad) var(--s3); scrollbar-width:none; cursor:grab; }
+.sq-btn{ width:56px; height:56px; display:grid; place-items:center; background:var(--bg); cursor:pointer; font-size:24px; font-weight:700; }
+.sq-btn:disabled{ opacity:.3; cursor:default; }
+.rail-hint{ display:inline-flex; align-items:center; gap:6px; background:var(--ink); color:var(--bg); padding:4px var(--s1); font-weight:700; white-space:nowrap; user-select:none; }
+.rail-hint b{ font-family:var(--f-body); font-size:18px; line-height:1; font-weight:700; }
+/* top/bottom padding leaves room for a tilted card's corners and shadow; the negative margin keeps the layout where it was */
+.rail{ display:flex; gap:var(--s3); overflow-x:auto; scroll-snap-type:x mandatory; scroll-padding-inline:var(--pad); padding:var(--s2) var(--pad) var(--s3); margin-top:calc(-1 * var(--s2)); scrollbar-width:none; cursor:grab; overscroll-behavior-x:contain; }
 .rail::-webkit-scrollbar{ display:none; }
 .rail::after{ content:""; flex:0 0 1px; }
 .rail.dragging{ scroll-snap-type:none; cursor:grabbing; user-select:none; }
@@ -174,10 +209,17 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 .rail-bar{ margin:var(--s2) var(--pad) 0; height:8px; border:var(--rule); box-sizing:content-box; }
 .rail-bar span{ display:block; height:100%; background:var(--ink); transform-origin:left; transform:scaleX(.2); transition:transform 60ms linear; }
 
-.trip{ --c-bg:var(--bg); --c-fg:var(--ink); flex:0 0 clamp(288px,82vw,384px); scroll-snap-align:start; display:flex; flex-direction:column; background:var(--c-bg); color:var(--c-fg); border:var(--rule); box-shadow:var(--sh); }
-.trip--orange{ --c-bg:var(--orange); --focus:var(--ink); }
-.trip--green{ --c-bg:var(--green); --c-fg:var(--bg); --focus:var(--bg); }
-.trip-top{ display:flex; justify-content:space-between; align-items:center; padding:var(--s1) var(--s3); border-bottom:var(--rule); }
+.trip{ --c-bg:var(--bg); --c-fg:var(--ink); flex:0 0 clamp(288px,82vw,384px); scroll-snap-align:start; display:flex; flex-direction:column; background:var(--c-bg); color:var(--c-fg); border:var(--rule); box-shadow:var(--sh); transition:transform var(--snap); }
+.trip--pink{ --c-bg:var(--pink); --focus:var(--ink); }
+.trip--blue{ --c-bg:var(--blue); --c-fg:var(--bg); --focus:var(--bg); }
+.trip--mauve{ --c-bg:var(--mauve); --focus:var(--ink); }
+.trip--plum{ --c-bg:var(--plum); --c-fg:var(--bg); --focus:var(--bg); }
+.trip-top{ display:flex; justify-content:space-between; align-items:center; padding:var(--s1) var(--s3); border-bottom:var(--rule); transition:background-color var(--snap), color var(--snap); }
+/* hover (and keyboard focus inside a card): tilt -2deg, top block turns --hot with #111 text */
+@media (hover:hover){ .trip:hover{ transform:rotate(-2deg); } .trip:hover .trip-top{ background:var(--hot); color:var(--ink); } }
+.trip:has(:focus-visible){ transform:rotate(-2deg); }
+.trip:has(:focus-visible) .trip-top{ background:var(--hot); color:var(--ink); }
+.rail.dragging .trip{ transform:none; }
 .trip-num{ font-family:var(--f-display); font-size:40px; line-height:1; }
 .trip-dur{ border:3px solid currentColor; padding:2px var(--s1); font-weight:700; }
 .trip-title{ font-family:var(--f-display); font-weight:400; font-size:clamp(40px,4vw,52px); line-height:.92; text-transform:uppercase; padding:var(--s3) var(--s3) var(--s2); min-height:calc(2 * .92em + 40px); }
@@ -195,28 +237,36 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 .num{ padding:var(--s6) var(--pad); border-top:var(--rule); }
 .num:first-child{ border-top:0; }
 .num b{ display:block; font-family:var(--f-display); font-weight:400; font-size:clamp(96px,12vw,208px); line-height:.9; }
-.num:first-child b{ color:var(--orange); }
-.num span{ display:block; margin-top:var(--s2); font-size:clamp(18px,1.6vw,22px); font-weight:700; max-width:16ch; }
+.num:first-child b{ color:var(--pink); }
+.num-v{ display:inline-block; font-variant-numeric:tabular-nums; }
+.num-v .ch{ position:relative; }
+.num-v .ch.is-hidden{ visibility:hidden; }
+.num-v .ch.caret::after{ content:""; position:absolute; left:100%; top:.1em; bottom:.12em; width:.07em; margin-left:.03em; background:currentColor; animation:caret 1s steps(1) infinite; }
+@keyframes caret{ 50%{ opacity:0; } }
+/* Hyper Text: letter slots are locked to each real letter's width while scrambling, so lines never move */
+.hx-word{ white-space:nowrap; }
+.hx-ch{ display:inline-block; text-align:center; }
+.num > span{ display:block; margin-top:var(--s2); font-size:clamp(18px,1.6vw,22px); font-weight:700; max-width:16ch; }
 @media (min-width:700px){ .nums{ grid-template-columns:repeat(3,1fr); } .num{ border-top:0; border-left:var(--rule); padding:var(--s8) var(--s4); } .num:first-child{ border-left:0; padding-left:var(--pad); } }
 
 /* ============ HOW IT WORKS ============ */
-.how{ background:var(--green); color:var(--bg); }
+.how{ background:var(--blue); color:var(--bg); }
 .steps{ list-style:none; display:grid; gap:var(--s4); grid-template-columns:1fr; }
-.step{ background:var(--bg); color:var(--ink); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); display:flex; flex-direction:column; --focus:var(--green); }
-.step-n{ font-family:var(--f-display); font-size:104px; line-height:.85; color:var(--orange); }
+.step{ background:var(--bg); color:var(--ink); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); display:flex; flex-direction:column; --focus:var(--blue); }
+.step-n{ font-family:var(--f-display); font-size:104px; line-height:.85; color:var(--pink); }
 .step h3{ font-family:var(--f-display); font-weight:400; font-size:clamp(28px,2.6vw,36px); line-height:1; text-transform:uppercase; margin:var(--s3) 0 var(--s1); }
 .step p{ max-width:34ch; }
 @media (min-width:820px){ .steps{ grid-template-columns:repeat(3,1fr); } }
 
 /* ============ BADGE MARQUEE ============ */
-.proof{ border-bottom:var(--rule); overflow:hidden; padding:var(--s3) 0; }
-.proof-track{ display:flex; width:max-content; animation:marq 32s linear infinite; }
-.proof:hover .proof-track{ animation-play-state:paused; }
-.proof-set{ display:flex; align-items:center; gap:var(--s2); padding-right:var(--s2); }
+.proof{ border-bottom:var(--rule); padding:var(--s3) 0; }
+.marquee{ --gap:var(--s2); --duration:32s; display:flex; gap:var(--gap); overflow:hidden; }
+.marquee-copy{ display:flex; flex:none; align-items:center; gap:var(--gap); animation:marquee var(--duration) linear infinite; will-change:transform; }
+.marquee:hover .marquee-copy{ animation-play-state:paused; }
 .badge{ border:var(--rule); padding:var(--s1) var(--s3); font-weight:700; font-size:22px; white-space:nowrap; background:var(--bg); }
 .badge--ink{ background:var(--ink); color:var(--bg); }
 .proof-label{ padding:0 var(--s1) 0 var(--s3); white-space:nowrap; font-weight:700; }
-@keyframes marq{ to{ transform:translateX(-50%); } }
+@keyframes marquee{ to{ transform:translateX(calc(-100% - var(--gap))); } }
 
 /* ============ MOMENTS (Instagram cards) ============ */
 .ig-grid{ display:grid; gap:var(--s4); grid-template-columns:repeat(auto-fit,minmax(288px,1fr)); }
@@ -233,29 +283,29 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 .ig-actions button{ cursor:pointer; }
 .ig-actions svg{ width:26px; height:26px; fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linejoin:round; stroke-linecap:round; }
 .ig-actions .save{ margin-left:auto; }
-.ig-like[aria-pressed="true"] svg{ fill:var(--orange); }
-.ig-like.pop svg{ animation:pop 160ms steps(2,end); }
+.ig-like[aria-pressed="true"] svg{ fill:var(--pink); }
+.ig-like.pop svg{ animation:pop var(--snap); }
 @keyframes pop{ 50%{ transform:scale(1.3); } }
 .ig-body{ padding:0 var(--s2) var(--s2); font-size:15px; }
 .ig-likes{ font-weight:700; margin-bottom:4px; }
 .ig-cap b{ margin-right:4px; }
-.ig-cap .tag{ color:var(--green); font-weight:700; }
+.ig-cap .tag{ color:var(--blue); font-weight:700; }
 .ig-time{ margin-top:var(--s1); opacity:.7; }
 
 /* ============ GROUP DEAL ============ */
-.deal{ background:var(--orange); color:var(--ink); }
+.deal{ background:var(--pink); color:var(--ink); }
 .deal-grid{ display:grid; gap:var(--s6); grid-template-columns:1fr; align-items:end; }
 .deal .mega{ font-size:clamp(56px,8.5vw,152px); }
 .deal .lead{ margin-top:var(--s3); font-weight:500; }
-.calc{ background:var(--bg); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); --focus:var(--green); }
+.calc{ background:var(--bg); border:var(--rule); box-shadow:var(--sh); padding:var(--s4); --focus:var(--blue); }
 .field{ display:block; margin-bottom:var(--s3); }
 .field > span{ display:block; margin-bottom:var(--s1); font-weight:700; }
 .select,.input{ width:100%; height:56px; border:var(--rule); background:var(--bg); padding:0 var(--s2); font-size:17px; }
 .select{ appearance:none; background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%); background-position:calc(100% - 24px) 50%,calc(100% - 16px) 50%; background-size:8px 8px; background-repeat:no-repeat; padding-right:var(--s6); }
-.stepper{ display:flex; }
-.stepper button{ width:56px; height:56px; border:var(--rule); background:var(--ink); color:var(--bg); font-size:24px; font-weight:700; cursor:pointer; }
-.stepper button:active{ background:var(--orange); color:var(--ink); }
-.stepper input{ width:88px; height:56px; border:var(--rule); border-left:0; border-right:0; text-align:center; font-family:var(--f-display); font-size:28px; background:var(--bg); -moz-appearance:textfield; }
+.stepper{ display:flex; gap:var(--s2); align-items:center; }
+.stepper button{ flex:none; width:56px; height:56px; background:var(--ink); color:var(--bg); font-size:24px; font-weight:700; cursor:pointer; }
+.stepper button:active{ background:var(--pink); color:var(--ink); }
+.stepper input{ width:88px; height:56px; border:var(--rule); text-align:center; font-family:var(--f-display); font-size:28px; background:var(--bg); -moz-appearance:textfield; }
 .stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
 .calc-out{ border-top:var(--rule); padding-top:var(--s3); margin-bottom:var(--s3); }
 .calc-each{ font-family:var(--f-display); font-size:56px; line-height:1; }
@@ -269,14 +319,19 @@ html[lang="bn"] .final h2{ line-height:1.1; }
 .faq-side .mega{ font-size:clamp(48px,13vw,120px); overflow-wrap:normal; }
 .faq-list{ border-top:var(--rule); }
 .faq-list details{ border-bottom:var(--rule); }
-.faq-list summary{ list-style:none; display:flex; justify-content:space-between; align-items:center; gap:var(--s3); padding:var(--s3) 0; cursor:pointer; font-family:var(--f-display); font-size:clamp(24px,2.6vw,36px); line-height:1.05; text-transform:uppercase; }
+.faq-list summary{ list-style:none; display:flex; justify-content:space-between; align-items:center; gap:var(--s3); padding:var(--s3) var(--s1) var(--s3) 0; cursor:pointer; font-family:var(--f-display); font-size:clamp(24px,2.6vw,36px); line-height:1.05; text-transform:uppercase; }
 .faq-list summary::-webkit-details-marker{ display:none; }
 html[lang="bn"] .faq-list summary{ font-family:var(--f-bn); font-weight:700; }
-.pm{ flex:none; width:48px; height:48px; border:var(--rule); display:grid; place-items:center; background:var(--bg); transition:background-color var(--snap); }
+.pm{ flex:none; width:48px; height:48px; border:var(--rule); box-shadow:6px 6px 0 var(--ink); display:grid; place-items:center; background:var(--bg); transition:background-color var(--snap), transform var(--snap), box-shadow var(--snap); }
+@media (hover:hover){ .faq-list summary:hover .pm{ transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--ink); } }
+.faq-list summary:active .pm{ transform:translate(6px,6px); box-shadow:0 0 0 var(--ink); }
 .pm::before{ content:"+"; font-family:var(--f-mono); font-size:28px; font-weight:700; line-height:1; transition:transform var(--snap); }
-details[open] .pm{ background:var(--orange); }
-details[open] .pm::before{ transform:rotate(45deg); }
-.faq-list summary:hover .pm{ background:var(--orange); }
+.faq-list:not(.js) details[open] .pm,.faq-list.js details.is-open .pm{ background:var(--pink); }
+.faq-list:not(.js) details[open] .pm::before,.faq-list.js details.is-open .pm::before{ transform:rotate(45deg); }
+.faq-list.js .faq-body{ overflow:hidden; --stop:100%;
+  -webkit-mask-image:linear-gradient(to bottom,#000 var(--stop),transparent calc(var(--stop) + 30%));
+          mask-image:linear-gradient(to bottom,#000 var(--stop),transparent calc(var(--stop) + 30%)); }
+.faq-list summary:hover .pm{ background:var(--pink); }
 .faq-a{ padding:0 0 var(--s3); max-width:62ch; font-size:18px; }
 @media (min-width:960px){ .faq-side .mega{ font-size:min(7.2vw,120px); } .faq-grid{ grid-template-columns:1fr 1.6fr; } .faq-side{ position:sticky; top:calc(var(--nav-h) + var(--s4)); align-self:start; } }
 
@@ -297,7 +352,7 @@ details[open] .pm::before{ transform:rotate(45deg); }
 .foot h3{ font-family:var(--f-mono); font-size:13px; font-weight:700; margin-bottom:var(--s2); }
 .foot ul{ list-style:none; }
 .foot li a{ display:inline-block; text-decoration:none; padding:4px 0; font-weight:500; text-decoration-thickness:3px; text-underline-offset:4px; }
-.foot li a:hover{ text-decoration:underline; text-decoration-color:var(--orange); }
+.foot li a:hover{ text-decoration:underline; text-decoration-color:var(--pink); }
 .foot-meta{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:var(--s1) var(--s3); border-top:var(--rule); margin-top:var(--s8); padding:var(--s2) 0; }
 .wordmark{ display:block; font-family:var(--f-display); font-weight:400; line-height:.86; white-space:nowrap; font-size:30vw; text-align:center; margin:var(--s2) 0 -.06em; }
 .wordmark .t{ display:inline-block; }
@@ -306,25 +361,37 @@ details[open] .pm::before{ transform:rotate(45deg); }
 /* ============ DIALOG ============ */
 dialog{ margin:auto; width:min(560px, calc(100vw - 32px)); max-height:calc(100svh - 32px); border:var(--rule); box-shadow:var(--sh); background:var(--bg); color:var(--ink); padding:0; overflow:auto; }
 dialog::backdrop{ background:rgba(17,17,17,.7); }
-.dlg-head{ display:flex; justify-content:space-between; align-items:center; gap:var(--s2); background:var(--orange); border-bottom:var(--rule); padding:var(--s2) var(--s3); --focus:var(--ink); }
+.dlg-head{ display:flex; justify-content:space-between; align-items:center; gap:var(--s2); background:var(--pink); border-bottom:var(--rule); padding:var(--s2) var(--s3); --focus:var(--ink); }
 .dlg-title{ font-family:var(--f-display); font-weight:400; font-size:36px; line-height:1; text-transform:uppercase; }
-.dlg-x{ width:48px; height:48px; flex:none; border:var(--rule); background:var(--bg); font-size:20px; font-weight:700; cursor:pointer; }
+.dlg-x{ width:48px; height:48px; flex:none; background:var(--bg); font-size:20px; font-weight:700; cursor:pointer; }
 .dlg-body{ padding:var(--s3); }
 .dlg-note{ margin-bottom:var(--s3); }
 .dlg-done{ font-size:19px; font-weight:500; }
 .dlg-done b{ display:block; font-family:var(--f-display); font-weight:400; font-size:40px; line-height:1; margin-bottom:var(--s2); }
-.input:invalid:not(:placeholder-shown){ border-color:var(--orange); }
+.input:invalid:not(:placeholder-shown){ border-color:var(--pink); }
 .hint{ display:block; margin-top:4px; font-size:14px; }
+.dlg-err{ background:var(--ink); color:var(--bg); padding:var(--s1) var(--s2); margin-bottom:var(--s3); font-weight:700; font-size:15px; }
+.btn:disabled{ cursor:progress; opacity:.7; }
+
+/* ============ SCROLL REVEALS ============
+   Each block slides up 16px and fades in over --dur when it enters the screen; cards in a row are staggered 60ms.
+   The `translate` property is used so it never clashes with hover transforms (card tilt, button press). */
+@keyframes reveal{ from{ opacity:0; translate:0 16px; } }
+.js-reveal :is(.sec-head, #how-h, .steps > li, .nums > .num, .rail > .trip, .ig-grid > .ig, .deal-grid > *, .faq-side, .faq-list > details, .final > *, .foot-grid > *):not(.is-in){ opacity:0; }
+.js-reveal :is(.sec-head, #how-h, .steps > li, .nums > .num, .rail > .trip, .ig-grid > .ig, .deal-grid > *, .faq-side, .faq-list > details, .final > *, .foot-grid > *).is-in{ animation:reveal var(--snap) var(--d,0ms) backwards; }
 
 /* ============ REDUCED MOTION ============ */
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ transition-duration:0s!important; animation:none!important; }
-  .proof-track{ flex-wrap:wrap; width:auto; padding:0 var(--pad); row-gap:var(--s2); }
-  .proof-set[aria-hidden="true"]{ display:none; }
+  .marquee{ padding-left:var(--pad); padding-right:var(--pad); }
+  .marquee-copy{ flex-wrap:wrap; flex:1 1 auto; row-gap:var(--s2); }
+  .marquee-copy[aria-hidden="true"]{ display:none; }
   .vel-row{ white-space:normal; }
   .vel-unit:not(:first-child){ display:none; }
   .vel-unit{ flex-wrap:wrap; }
+  .trip:hover,.trip:has(:focus-visible){ transform:none!important; }
+  .js-reveal :is(.sec-head, #how-h, .steps > li, .nums > .num, .rail > .trip, .ig-grid > .ig, .deal-grid > *, .faq-side, .faq-list > details, .final > *, .foot-grid > *){ opacity:1!important; }
 }
 </style>
 </head>
@@ -348,21 +415,29 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <button type="button" data-lang="bn" aria-pressed="false" lang="bn">বাংলা</button>
     </div>
     <a class="btn btn--sm" href="#trips" data-i18n="nav.book">BOOK NOW ↗</a>
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-panel">MENU</button>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu">MENU</button>
   </div>
-  <div class="nav-panel" id="nav-panel" hidden>
-    <ul>
+</header>
+<div class="nav-sentinel" aria-hidden="true"></div>
+
+<!-- FULL-SCREEN MOBILE MENU -->
+<div class="menu" id="menu" inert>
+  <nav aria-label="Menu">
+    <ol class="menu-links">
       <li><a href="#trips" data-i18n="nav.trips">TRIPS</a></li>
       <li><a href="#deal" data-i18n="nav.deals">DEALS</a></li>
       <li><a href="#moments" data-i18n="nav.stories">STORIES</a></li>
       <li><a href="#about" data-i18n="nav.about">ABOUT</a></li>
-    </ul>
+    </ol>
+  </nav>
+  <div class="menu-foot">
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="bn" aria-pressed="false" lang="bn">বাংলা</button>
     </div>
+    <a class="btn btn--lg" href="#trips" data-i18n="nav.book">BOOK NOW ↗</a>
   </div>
-</header>
+</div>
 
 <main id="top">
 <!-- 2. HERO -->
@@ -378,7 +453,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <figure class="hero-photo">
         <img src="https://images.unsplash.com/photo-1658383898607-6b92e8196e33?auto=format&fit=crop&w=1400&q=70"
              alt="Clouds drifting over the forested hills of Sajek Valley at dawn"
-             width="1400" height="933" fetchpriority="high" data-place="Sajek Valley" data-tone="green" onerror="phFail(this)">
+             width="1400" height="933" fetchpriority="high" data-place="Sajek Valley" data-tone="blue" onerror="phFail(this)">
         <figcaption class="tag mono">SAJEK, 05:42</figcaption>
         <a class="btn-round" href="#trips"><span data-i18n="hero.cta">BOOK A<br>TRIP ↗</span></a>
       </figure>
@@ -390,12 +465,12 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 <!-- 3. DESTINATION TICKER (scroll-based velocity) -->
 <section class="ticker" aria-label="Destinations">
   <p class="vh">Destinations: Sajek, Sundarbans, Saint Martin, Srimangal, Bandarban, Kuakata.</p>
-  <div class="vel-row" data-speed="70" data-dir="-1" aria-hidden="true">
+  <div class="vel-row" data-velocity="2.5" data-dir="1" aria-hidden="true">
     <div class="vel-track">
       <span class="vel-unit">SAJEK<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SUNDARBANS<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAINT MARTIN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SRIMANGAL<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>BANDARBAN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>KUAKATA<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg></span>
     </div>
   </div>
-  <div class="vel-row vel-row--alt" data-speed="70" data-dir="1" aria-hidden="true">
+  <div class="vel-row vel-row--alt" data-velocity="2.5" data-dir="-1" aria-hidden="true">
     <div class="vel-track">
       <span class="vel-unit">KUAKATA<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>BANDARBAN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SRIMANGAL<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAINT MARTIN<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SUNDARBANS<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg>SAJEK<svg class="star" viewBox="0 0 24 24"><path d="M12 0v24M0 12h24M3.5 3.5l17 17M20.5 3.5l-17 17" stroke="currentColor" stroke-width="3.4"/></svg></span>
     </div>
@@ -410,13 +485,14 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <p class="lead" data-i18n="trips.sub">Fixed prices. Transport from Dhaka, stays, meals and a trip leader included.</p>
     </div>
     <div class="rail-ctrl">
+      <p class="rail-hint mono" aria-hidden="true"><span data-i18n="trips.hint">drag</span> <b>⟷</b></p>
       <button class="sq-btn" type="button" data-rail="prev" aria-label="Previous trips">←</button>
       <button class="sq-btn" type="button" data-rail="next" aria-label="Next trips">→</button>
     </div>
   </div>
 
   <div class="rail" tabindex="0" role="region" aria-label="Trips, scroll sideways">
-    <article class="trip trip--orange" data-id="sajek" data-name="Sajek Valley" data-price="6500">
+    <article class="trip trip--pink" data-id="sajek" data-name="Sajek Valley" data-price="6500">
       <div class="trip-top"><span class="trip-num">01</span><span class="trip-dur mono">2N/3D</span></div>
       <h3 class="trip-title">Sajek Valley</h3>
       <div class="trip-photo"><img src="https://images.unsplash.com/photo-1645153529792-c5823ffe9525?auto=format&fit=crop&w=800&q=70" alt="Hilltop village houses in Sajek Valley surrounded by trees" width="800" height="500" loading="lazy" draggable="false" data-place="Sajek Valley" data-tone="ink" onerror="phFail(this)"></div>
@@ -433,10 +509,10 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <p class="trip-next mono">Next departure Thu 3 Dec, 6 seats left</p>
     </article>
 
-    <article class="trip trip--green" data-id="srimangal" data-name="Srimangal Tea Trail" data-price="8900">
+    <article class="trip trip--blue" data-id="srimangal" data-name="Srimangal Tea Trail" data-price="8900">
       <div class="trip-top"><span class="trip-num">02</span><span class="trip-dur mono">2N/3D</span></div>
       <h3 class="trip-title">Srimangal Tea Trail</h3>
-      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1724257288409-dd6e1de5c20d?auto=format&fit=crop&w=800&q=70" alt="Tree-covered green hills in the tea country around Srimangal" width="800" height="500" loading="lazy" draggable="false" data-place="Srimangal" data-tone="orange" onerror="phFail(this)"></div>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1724257288409-dd6e1de5c20d?auto=format&fit=crop&w=800&q=70" alt="Tree-covered green hills in the tea country around Srimangal" width="800" height="500" loading="lazy" draggable="false" data-place="Srimangal" data-tone="pink" onerror="phFail(this)"></div>
       <ul class="trip-rows">
         <li><span class="mono">THU 22:00</span><span>Night train from Kamalapur</span></li>
         <li><span class="mono">FRI</span><span>Tea estates and a Lawachara forest walk</span></li>
@@ -453,7 +529,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     <article class="trip" data-id="tanguar" data-name="Tanguar Haor Houseboat" data-price="5800">
       <div class="trip-top"><span class="trip-num">03</span><span class="trip-dur mono">1N/2D</span></div>
       <h3 class="trip-title">Tanguar Haor Houseboat</h3>
-      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1696347516329-5244eae4e5f1?auto=format&fit=crop&w=800&h=500&q=70" alt="A lone tree standing in the still water of Tanguar Haor" width="800" height="500" loading="lazy" draggable="false" data-place="Tanguar Haor" data-tone="green" onerror="phFail(this)"></div>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1696347516329-5244eae4e5f1?auto=format&fit=crop&w=800&h=500&q=70" alt="A lone tree standing in the still water of Tanguar Haor" width="800" height="500" loading="lazy" draggable="false" data-place="Tanguar Haor" data-tone="blue" onerror="phFail(this)"></div>
       <ul class="trip-rows">
         <li><span class="mono">THU 23:00</span><span>Bus from Sayedabad to Sunamganj</span></li>
         <li><span class="mono">FRI</span><span>Board the houseboat, Watchtower and Niladri Lake</span></li>
@@ -467,7 +543,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <p class="trip-next mono">Winter run: shallower water, more birds. Next Thu 10 Dec</p>
     </article>
 
-    <article class="trip trip--orange" data-id="sundarbans" data-name="Sundarbans Cruise" data-price="11600">
+    <article class="trip trip--mauve" data-id="sundarbans" data-name="Sundarbans Cruise" data-price="11600">
       <div class="trip-top"><span class="trip-num">04</span><span class="trip-dur mono">3N/4D</span></div>
       <h3 class="trip-title">Sundarbans Cruise</h3>
       <div class="trip-photo"><img src="https://images.unsplash.com/photo-1549300461-11c5b94e8855?auto=format&fit=crop&w=800&q=70" alt="Tall mangrove trees lining a channel in the Sundarbans" width="800" height="500" loading="lazy" draggable="false" data-place="Sundarbans" data-tone="ink" onerror="phFail(this)"></div>
@@ -484,10 +560,10 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <p class="trip-next mono">Next departure Wed 9 Dec, 12 cabins left</p>
     </article>
 
-    <article class="trip trip--green" data-id="bandarban" data-name="Bandarban Nilgiri Trek" data-price="9900">
+    <article class="trip trip--plum" data-id="bandarban" data-name="Bandarban Nilgiri Trek" data-price="9900">
       <div class="trip-top"><span class="trip-num">05</span><span class="trip-dur mono">3N/4D</span></div>
       <h3 class="trip-title">Bandarban Nilgiri Trek</h3>
-      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1715922808700-f707baae4bb5?auto=format&fit=crop&w=800&q=70" alt="Fog and low clouds over green hills in Bandarban" width="800" height="500" loading="lazy" draggable="false" data-place="Bandarban" data-tone="orange" onerror="phFail(this)"></div>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1715922808700-f707baae4bb5?auto=format&fit=crop&w=800&q=70" alt="Fog and low clouds over green hills in Bandarban" width="800" height="500" loading="lazy" draggable="false" data-place="Bandarban" data-tone="pink" onerror="phFail(this)"></div>
       <ul class="trip-rows">
         <li><span class="mono">DAY 1</span><span>Night bus from Arambagh</span></li>
         <li><span class="mono">DAY 2</span><span>Nilgiri at 2,200 ft, sunset over the hills</span></li>
@@ -504,7 +580,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     <article class="trip" data-id="nepal" data-name="Kathmandu &amp; Pokhara" data-price="45000">
       <div class="trip-top"><span class="trip-num">06</span><span class="trip-dur mono">4N/5D</span></div>
       <h3 class="trip-title">Kathmandu &amp; Pokhara</h3>
-      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1716503191918-b811f0f9cdb1?auto=format&fit=crop&w=800&q=70" alt="A row of wooden boats on Phewa Lake in Pokhara, Nepal" width="800" height="500" loading="lazy" draggable="false" data-place="Pokhara" data-tone="green" onerror="phFail(this)"></div>
+      <div class="trip-photo"><img src="https://images.unsplash.com/photo-1716503191918-b811f0f9cdb1?auto=format&fit=crop&w=800&q=70" alt="A row of wooden boats on Phewa Lake in Pokhara, Nepal" width="800" height="500" loading="lazy" draggable="false" data-place="Pokhara" data-tone="blue" onerror="phFail(this)"></div>
       <ul class="trip-rows">
         <li><span class="mono">DAY 1</span><span>Fly Dhaka to Kathmandu, check in at Thamel</span></li>
         <li><span class="mono">DAY 2</span><span>Tourist bus to Pokhara, evening on Phewa Lake</span></li>
@@ -524,8 +600,8 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 <!-- 5. BIG NUMBERS -->
 <section class="nums" id="about" aria-label="Pothik in numbers">
   <div class="num"><b><span class="tk">৳</span>0</b><span data-i18n="num.1">hidden fees. Ever.</span></div>
-  <div class="num"><b>24/7</b><span data-i18n="num.2">Bangla support on WhatsApp</span></div>
-  <div class="num"><b>12K+</b><span data-i18n="num.3">trips booked by under-25s</span></div>
+  <div class="num"><b data-type><span class="vh">24/7</span><span class="num-v" aria-hidden="true">24/7</span></b><span data-i18n="num.2">Bangla support on WhatsApp</span></div>
+  <div class="num"><b data-count="12" data-suffix="K+"><span class="vh">12K+</span><span class="num-v" aria-hidden="true">12K+</span></b><span data-i18n="num.3">trips booked by under-25s</span></div>
 </section>
 
 <!-- 6. HOW IT WORKS -->
@@ -553,21 +629,19 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 </section>
 
 <!-- 7. SOCIAL PROOF MARQUEE -->
-<section class="proof" aria-label="Payment partners and licences">
-  <div class="proof-track">
-    <div class="proof-set">
+<section class="proof marquee" aria-label="Payment partners and licences">
+    <div class="marquee-copy">
       <span class="proof-label mono" data-i18n="proof.pay">Pay with</span>
       <span class="badge">bKash</span><span class="badge">Nagad</span><span class="badge">Rocket</span><span class="badge">VISA</span><span class="badge">Mastercard</span>
       <span class="proof-label mono" data-i18n="proof.lic">Licensed by</span>
       <span class="badge badge--ink">IATA</span><span class="badge badge--ink">ATAB</span><span class="badge badge--ink">TOAB</span>
     </div>
-    <div class="proof-set" aria-hidden="true">
+    <div class="marquee-copy" aria-hidden="true">
       <span class="proof-label mono" data-i18n="proof.pay">Pay with</span>
       <span class="badge">bKash</span><span class="badge">Nagad</span><span class="badge">Rocket</span><span class="badge">VISA</span><span class="badge">Mastercard</span>
       <span class="proof-label mono" data-i18n="proof.lic">Licensed by</span>
       <span class="badge badge--ink">IATA</span><span class="badge badge--ink">ATAB</span><span class="badge badge--ink">TOAB</span>
     </div>
-  </div>
 </section>
 
 <!-- 8. TESTIMONIALS -->
@@ -582,11 +656,11 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     <div class="ig-grid">
       <article class="ig">
         <header class="ig-head">
-          <span class="ig-av" style="background:var(--orange)" aria-hidden="true">N</span>
+          <span class="ig-av" style="background:var(--pink)" aria-hidden="true">N</span>
           <div class="ig-who"><b>nusrat.wanders</b><span class="mono">Saint Martin's Island</span></div>
           <span class="ig-dots" aria-hidden="true">•••</span>
         </header>
-        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1714026983620-18088b76bdb5?auto=format&fit=crop&w=700&h=700&q=70" alt="Fishing boats pulled up on the sand at Saint Martin's Island" width="700" height="700" loading="lazy" data-place="Saint Martin" data-tone="orange" onerror="phFail(this)"></div>
+        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1714026983620-18088b76bdb5?auto=format&fit=crop&w=700&h=700&q=70" alt="Fishing boats pulled up on the sand at Saint Martin's Island" width="700" height="700" loading="lazy" data-place="Saint Martin" data-tone="pink" onerror="phFail(this)"></div>
         <div class="ig-actions">
           <button class="ig-like" type="button" aria-pressed="false" aria-label="Like nusrat.wanders's post"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.4-9.1C1.2 8 3.2 4.6 6.6 4.6c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.4 0 5.4 3.4 4 6.8-1.9 4.5-9.4 9.1-9.4 9.1z"/></svg></button>
           <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.1A8.5 8.5 0 1 1 21 12z"/></svg></span>
@@ -602,11 +676,11 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 
       <article class="ig">
         <header class="ig-head">
-          <span class="ig-av" style="background:var(--green);color:var(--bg)" aria-hidden="true">R</span>
+          <span class="ig-av" style="background:var(--blue);color:var(--bg)" aria-hidden="true">R</span>
           <div class="ig-who"><b>rafi.on.water</b><span class="mono">Tanguar Haor, Sunamganj</span></div>
           <span class="ig-dots" aria-hidden="true">•••</span>
         </header>
-        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1695277501535-691c6a843578?auto=format&fit=crop&w=700&h=700&q=70" alt="A wooden boat on open water at Tanguar Haor" width="700" height="700" loading="lazy" data-place="Tanguar Haor" data-tone="green" onerror="phFail(this)"></div>
+        <div class="ig-photo"><img src="https://images.unsplash.com/photo-1695277501535-691c6a843578?auto=format&fit=crop&w=700&h=700&q=70" alt="A wooden boat on open water at Tanguar Haor" width="700" height="700" loading="lazy" data-place="Tanguar Haor" data-tone="blue" onerror="phFail(this)"></div>
         <div class="ig-actions">
           <button class="ig-like" type="button" aria-pressed="false" aria-label="Like rafi.on.water's post"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.4-9.1C1.2 8 3.2 4.6 6.6 4.6c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.4 0 5.4 3.4 4 6.8-1.9 4.5-9.4 9.1-9.4 9.1z"/></svg></button>
           <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.1A8.5 8.5 0 1 1 21 12z"/></svg></span>
@@ -622,7 +696,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 
       <article class="ig">
         <header class="ig-head">
-          <span class="ig-av" style="background:var(--ink);color:var(--bg)" aria-hidden="true">T</span>
+          <span class="ig-av" style="background:var(--plum);color:var(--bg)" aria-hidden="true">T</span>
           <div class="ig-who"><b>tahmid_trails</b><span class="mono">Bandarban</span></div>
           <span class="ig-dots" aria-hidden="true">•••</span>
         </header>
@@ -644,7 +718,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 </section>
 
 <!-- 9. GROUP DEAL -->
-<section class="sec deal on-orange" id="deal" aria-labelledby="deal-h">
+<section class="sec deal on-pink" id="deal" aria-labelledby="deal-h">
   <div class="wrap deal-grid">
     <div>
       <h2 class="mega disp" id="deal-h" data-i18n="deal.h">Bring 9 friends, the 10th goes free</h2>
@@ -681,23 +755,23 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     <div class="faq-list">
       <details name="faq" open>
         <summary><span data-i18n="faq.q1">Can I get a refund if plans change?</span><span class="pm" aria-hidden="true"></span></summary>
-        <p class="faq-a" data-i18n="faq.a1">Cancel 7 or more days before departure and you get everything back, except the ৳1,000 reservation, which becomes trip credit for 12 months. Cancel 3 to 6 days before and you get 50% back. Under 72 hours we can't refund, but you can hand your seat to a friend for free. If we cancel because of weather, permits or a hartal, you get 100% back to your bKash within 3 working days.</p>
+        <div class="faq-body"><p class="faq-a" data-i18n="faq.a1">Cancel 7 or more days before departure and you get everything back, except the ৳1,000 reservation, which becomes trip credit for 12 months. Cancel 3 to 6 days before and you get 50% back. Under 72 hours we can't refund, but you can hand your seat to a friend for free. If we cancel because of weather, permits or a hartal, you get 100% back to your bKash within 3 working days.</p></div>
       </details>
       <details name="faq">
         <summary><span data-i18n="faq.q2">How does paying in parts with bKash work?</span><span class="pm" aria-hidden="true"></span></summary>
-        <p class="faq-a" data-i18n="faq.a2">Reserve your seat with ৳1,000. Pay the rest in up to 3 parts on bKash, Nagad, Rocket or card, with the last part due 72 hours before departure. We send a WhatsApp reminder before each one. No interest and no extra charge.</p>
+        <div class="faq-body"><p class="faq-a" data-i18n="faq.a2">Reserve your seat with ৳1,000. Pay the rest in up to 3 parts on bKash, Nagad, Rocket or card, with the last part due 72 hours before departure. We send a WhatsApp reminder before each one. No interest and no extra charge.</p></div>
       </details>
       <details name="faq">
         <summary><span data-i18n="faq.q3">What's included in the price?</span><span class="pm" aria-hidden="true"></span></summary>
-        <p class="faq-a" data-i18n="faq.a3">Return transport from Dhaka, every night's stay, the meals listed on the trip, entry fees and permits, a Pothik trip leader and local guides. Not included: your own snacks, optional activities like paragliding in Pokhara, and tips. Every trip lists both, line by line.</p>
+        <div class="faq-body"><p class="faq-a" data-i18n="faq.a3">Return transport from Dhaka, every night's stay, the meals listed on the trip, entry fees and permits, a Pothik trip leader and local guides. Not included: your own snacks, optional activities like paragliding in Pokhara, and tips. Every trip lists both, line by line.</p></div>
       </details>
       <details name="faq">
         <summary><span data-i18n="faq.q4">Is it safe? Who are the guides?</span><span class="pm" aria-hidden="true"></span></summary>
-        <p class="faq-a" data-i18n="faq.a4">Every group has a trip leader trained in first aid and a licensed local guide. Mixed groups always have a female co-leader, and rooms are split by gender unless you book as a couple or a group of friends. Our 24/7 WhatsApp line reaches a real person in Dhaka, in Bangla or English.</p>
+        <div class="faq-body"><p class="faq-a" data-i18n="faq.a4">Every group has a trip leader trained in first aid and a licensed local guide. Mixed groups always have a female co-leader, and rooms are split by gender unless you book as a couple or a group of friends. Our 24/7 WhatsApp line reaches a real person in Dhaka, in Bangla or English.</p></div>
       </details>
       <details name="faq">
         <summary><span data-i18n="faq.q5">Do groups get a discount?</span><span class="pm" aria-hidden="true"></span></summary>
-        <p class="faq-a" data-i18n="faq.a5">Book 10 seats and the 10th is free; book 20 and two are free. The saving is split across the group so everyone pays less. Groups of 5 to 9 get ৳300 off per person. Ask for a quote and we reply on WhatsApp within 2 hours, 9am to 11pm.</p>
+        <div class="faq-body"><p class="faq-a" data-i18n="faq.a5">Book 10 seats and the 10th is free; book 20 and two are free. The saving is split across the group so everyone pays less. Groups of 5 to 9 get ৳300 off per person. Ask for a quote and we reply on WhatsApp within 2 hours, 9am to 11pm.</p></div>
       </details>
     </div>
   </div>
@@ -747,6 +821,8 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
       <label class="field"><span>WhatsApp number</span><input class="input" name="phone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="01XXX-XXXXXX" pattern="^(\+?88)?0?1[3-9][0-9\s\-]{8,10}$"><span class="hint">Bangladeshi mobile number, 11 digits.</span></label>
       <label class="field"><span>Trip</span><select class="select" name="trip" id="dlg-trip"></select></label>
       <label class="field" id="dlg-size-f"><span>Group size</span><input class="input" name="size" type="number" min="2" max="60" value="10"></label>
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
+      <p class="dlg-err" id="dlg-err" role="alert" hidden></p>
       <button class="btn" type="submit" id="dlg-submit">RESERVE MY SEAT ↗</button>
     </form>
     <div class="dlg-done" id="dlg-done" role="status" hidden></div>
@@ -756,18 +832,76 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 <script>
 (function(){
   'use strict';
+  /* Booking emails: paste your Web3Forms access key here (web3forms.com). It is safe to be public.
+     Until it is set, the booking dialog only shows a confirmation and sends nothing. */
+  var FORM_KEY = 'YOUR_WEB3FORMS_ACCESS_KEY';
+  var FORM_URL = 'https://api.web3forms.com/submit';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var $ = function(s, r){ return (r||document).querySelector(s); };
   var $$ = function(s, r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
-  /* ---------- Mobile menu ---------- */
-  var menuBtn = $('.menu-btn'), panel = $('#nav-panel');
-  menuBtn.addEventListener('click', function(){
-    var open = menuBtn.getAttribute('aria-expanded') === 'true';
-    menuBtn.setAttribute('aria-expanded', String(!open));
-    panel.hidden = open;
-  });
-  $$('#nav-panel a').forEach(function(a){ a.addEventListener('click', function(){ menuBtn.setAttribute('aria-expanded','false'); panel.hidden = true; }); });
+  /* ---------- Shared motion: the same speed and easing as the CSS tokens ---------- */
+  var MOTION = (function(){
+    var cs = getComputedStyle(document.documentElement);
+    var dur = parseFloat(cs.getPropertyValue('--dur')) || 250;
+    var m = (cs.getPropertyValue('--ease').match(/cubic-bezier\(([^)]+)\)/) || [0, '.2,0,0,1'])[1].split(',').map(parseFloat);
+    function bez(a, b, t){ return 3 * a * t * (1 - t) * (1 - t) + 3 * b * t * t * (1 - t) + t * t * t; }
+    function ease(x){
+      if (x <= 0) return 0; if (x >= 1) return 1;
+      var lo = 0, hi = 1, t = x;
+      for (var i = 0; i < 24; i++){ t = (lo + hi) / 2; if (bez(m[0], m[2], t) < x) lo = t; else hi = t; }
+      return bez(m[1], m[3], t);
+    }
+    return { dur:dur, ease:ease };
+  })();
+
+  /* ---------- Navbar: shrinks once the page is scrolled ---------- */
+  var navEl = $('.nav');
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){ navEl.classList.toggle('is-small', !es[0].isIntersecting); }).observe($('.nav-sentinel'));
+  }
+
+  /* ---------- Full-screen mobile menu ----------
+     MENU turns into CLOSE; the page behind is made inert and stops scrolling; Escape, a link,
+     or widening the screen closes it; focus goes to the first link and back to the button. */
+  var menuBtn = $('.menu-btn'), menu = $('#menu'), behind = [$('main'), $('.foot'), $('.skip')];
+  function setMenu(open, refocus){
+    if (open === menu.classList.contains('is-open')) return;
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.textContent = open ? 'CLOSE' : 'MENU';
+    menu.classList.toggle('is-open', open);
+    menu.inert = !open;
+    behind.forEach(function(el){ if (el) el.inert = open; });
+    document.documentElement.classList.toggle('menu-open', open);
+    if (open){
+      $$('.menu-links li, .menu-foot', menu).forEach(function(el, i){ el.style.setProperty('--d', (i * 60) + 'ms'); });
+      var first = $('.menu-links a', menu); if (first) first.focus({ preventScroll:true });
+    } else if (refocus){ menuBtn.focus({ preventScroll:true }); }
+  }
+  menuBtn.addEventListener('click', function(){ setMenu(!menu.classList.contains('is-open'), true); });
+  $$('a', menu).forEach(function(a){ a.addEventListener('click', function(){ setMenu(false, false); }); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && menu.classList.contains('is-open')) setMenu(false, true); });
+  window.matchMedia('(min-width:960px)').addEventListener('change', function(m){ if (m.matches) setMenu(false, false); });
+
+  /* ---------- Scroll reveals (see the SCROLL REVEALS CSS) ---------- */
+  (function(){
+    window.__revealReady = true;
+    var groups = [['.sec-head'], ['#how-h'], ['.steps', ':scope > li'], ['.nums', ':scope > .num'], ['.rail', ':scope > .trip'],
+                  ['.ig-grid', ':scope > .ig'], ['.deal-grid', ':scope > *'], ['.faq-side'], ['.faq-list', ':scope > details'],
+                  ['.final', ':scope > *'], ['.foot-grid', ':scope > *']];
+    var list = [];
+    groups.forEach(function(g){ $$(g[0]).forEach(function(box){ list.push({ box:box, items: g[1] ? $$(g[1], box) : [box] }); }); });
+    function show(entry){ entry.items.forEach(function(el, i){ el.style.setProperty('--d', (Math.min(i, 6) * 60) + 'ms'); el.classList.add('is-in'); }); }
+    if (reduce.matches || !('IntersectionObserver' in window)){ list.forEach(show); return; }
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        list.forEach(function(x){ if (x.box === e.target) show(x); });
+      });
+    }, { threshold:.12, rootMargin:'0px 0px -6% 0px' });
+    list.forEach(function(x){ io.observe(x.box); });
+  })();
 
   /* ---------- Fit giant type ---------- */
   var hero = $('.hero'), heroInner = $('.hero-inner');
@@ -780,7 +914,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     heroInner.style.setProperty('--hero-fs-top', '100px');
     var w = $$('.hero-word .t', heroInner).map(function(t){ return t.getBoundingClientRect().width; });
     var topW = Math.max(w[0], w[1]);
-    var navH = $('.nav').offsetHeight;
+    var navH = $('.nav').offsetHeight + parseFloat(getComputedStyle($('.nav')).marginBottom || 0);   /* full height, even while shrunk */
     var vh = window.innerHeight;
     var wide = W >= 640 && window.innerWidth > window.innerHeight * 0.95;
     var fs = W / w[2] * 100 * 0.995, top;
@@ -817,141 +951,263 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
   fitAll();
   if (document.fonts && document.fonts.ready){ document.fonts.ready.then(fitAll); }
 
-  /* ---------- Interactive grid pattern (hero) ---------- */
+  /* ---------- Interactive grid pattern (hero) ----------
+     Mouse/pen: the square under the pointer fills and fades out over 600ms after the pointer leaves it.
+     Touch-only devices: a slow automatic pattern instead (one square every ~0.8s, fading over ~2s).
+     Reduced motion: no automatic pattern, and hover squares clear instantly instead of fading.
+     Colours come from --grid-fill and --grid-line on .hero-grid in the CSS. */
   (function(){
-    var cv = $('.hero-grid'), ctx = cv.getContext('2d');
-    var cell = 48, cols = 0, rows = 0, a = new Float32Array(0), hov = -1, w = 0, h = 0, dpr = 1, running = false, last = 0;
+    var cv = $('.hero-grid'), ctx = cv.getContext('2d'), side = $('.hero-side');
+    var CELL = 40, FADE = 600, AUTO_EVERY = 800, AUTO_FADE = 2000;
+    var touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)');
+    var cols = 0, rows = 0, a = new Float32Array(0), rate = new Float32Array(0);
+    var hov = -1, w = 0, h = 0, dpr = 1, fill = '#FF4F1A', line = 'rgba(17,17,17,.15)';
+    var running = false, last = 0, nextSpawn = 0, lastSpawn = -1, inView = true;
+    function auto(){ return touchOnly.matches && !reduce.matches; }
     function size(){
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       w = hero.clientWidth; h = hero.clientHeight;
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
-      cell = w < 700 ? 40 : 48;
-      cols = Math.ceil(w / cell); rows = Math.ceil(h / cell);
-      a = new Float32Array(cols * rows); hov = -1;
-      draw();
+      var cs = getComputedStyle(cv);
+      fill = cs.getPropertyValue('--grid-fill').trim() || fill;
+      line = cs.getPropertyValue('--grid-line').trim() || line;
+      cols = Math.ceil(w / CELL); rows = Math.ceil(h / CELL);
+      a = new Float32Array(cols * rows); rate = new Float32Array(cols * rows); hov = -1;
+      draw(); kick();
     }
     function draw(){
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-      ctx.clearRect(0,0,w,h);
-      ctx.fillStyle = '#FF4F1A';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = fill;
       for (var i = 0; i < a.length; i++){
-        if (a[i] > 0){ ctx.globalAlpha = a[i]; ctx.fillRect((i % cols) * cell, Math.floor(i / cols) * cell, cell, cell); }
+        if (a[i] > 0){ ctx.globalAlpha = a[i]; ctx.fillRect((i % cols) * CELL, Math.floor(i / cols) * CELL, CELL, CELL); }
       }
       ctx.globalAlpha = 1;
-      ctx.strokeStyle = 'rgba(17,17,17,.12)'; ctx.lineWidth = 1; ctx.beginPath();
-      for (var x = 0; x <= cols; x++){ ctx.moveTo(x*cell + .5, 0); ctx.lineTo(x*cell + .5, h); }
-      for (var y = 0; y <= rows; y++){ ctx.moveTo(0, y*cell + .5); ctx.lineTo(w, y*cell + .5); }
+      ctx.strokeStyle = line; ctx.lineWidth = 1; ctx.beginPath();
+      for (var x = 0; x <= cols; x++){ ctx.moveTo(x * CELL + .5, 0); ctx.lineTo(x * CELL + .5, h); }
+      for (var y = 0; y <= rows; y++){ ctx.moveTo(0, y * CELL + .5); ctx.lineTo(w, y * CELL + .5); }
       ctx.stroke();
     }
+    /* light a random square that isn't hidden behind the photo */
+    function spawn(){
+      if (!a.length) return;
+      var hr = hero.getBoundingClientRect(), sr = side.getBoundingClientRect();
+      for (var tries = 0; tries < 8; tries++){
+        var i = Math.floor(Math.random() * a.length);
+        if (i === lastSpawn || a[i] > 0) continue;
+        var cx = hr.left + (i % cols + .5) * CELL, cy = hr.top + (Math.floor(i / cols) + .5) * CELL;
+        if (cx > sr.left && cx < sr.right && cy > sr.top && cy < sr.bottom) continue;
+        if (cy > hr.top + h) continue;
+        a[i] = 1; rate[i] = 1 / AUTO_FADE; lastSpawn = i; return;
+      }
+    }
     function loop(t){
-      var dt = last ? t - last : 16; last = t;
-      var fade = reduce.matches ? 1 : 300, any = false;
+      var dt = last ? Math.min(t - last, 100) : 16; last = t;
+      var isAuto = auto();
+      if (isAuto && t >= nextSpawn){ spawn(); nextSpawn = t + AUTO_EVERY; }
+      var fading = false;
       for (var i = 0; i < a.length; i++){
-        if (i !== hov && a[i] > 0){ a[i] = Math.max(0, a[i] - dt / fade); if (a[i] > 0) any = true; }
+        if (i !== hov && a[i] > 0){ a[i] = Math.max(0, a[i] - dt * rate[i]); if (a[i] > 0) fading = true; }
       }
       draw();
-      if (any) requestAnimationFrame(loop); else { running = false; last = 0; }
+      if (inView && (fading || isAuto)) requestAnimationFrame(loop); else { running = false; last = 0; }
     }
-    function kick(){ if (!running){ running = true; requestAnimationFrame(loop); } }
+    function kick(){ if (!running && inView){ running = true; requestAnimationFrame(loop); } }
     hero.addEventListener('pointermove', function(e){
+      if (e.pointerType === 'touch' || !a.length) return;
       var r = hero.getBoundingClientRect();
-      var x = Math.floor((e.clientX - r.left) / cell), y = Math.floor((e.clientY - r.top) / cell);
+      var x = Math.floor((e.clientX - r.left) / CELL), y = Math.floor((e.clientY - r.top) / CELL);
       if (x < 0 || y < 0 || x >= cols || y >= rows) return;
       var idx = y * cols + x;
       if (idx === hov) return;
-      hov = idx; a[idx] = 1; kick();
+      if (hov > -1) rate[hov] = reduce.matches ? Infinity : 1 / FADE;
+      hov = idx; a[idx] = 1; rate[idx] = reduce.matches ? Infinity : 1 / FADE; kick();
     });
     hero.addEventListener('pointerleave', function(){ hov = -1; kick(); });
+    function modeChange(){ a.fill(0); hov = -1; draw(); kick(); }
+    [touchOnly, reduce].forEach(function(m){
+      if (m.addEventListener) m.addEventListener('change', modeChange); else if (m.addListener) m.addListener(modeChange);
+    });
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){ inView = es[0].isIntersecting; if (inView) kick(); }).observe(hero);
+    }
     if ('ResizeObserver' in window) new ResizeObserver(size).observe(hero); else window.addEventListener('resize', size);
     size();
   })();
 
-  /* ---------- Scroll-based velocity ticker ---------- */
+  /* ---------- Scroll-based velocity ticker (after Magic UI "Scroll Based Velocity") ----------
+     Each .vel-row moves data-velocity % of one copy's width per second (1 = leftwards, -1 = rightwards via data-dir).
+     Scroll speed goes through a spring (stiffness 400, damping 50, mass 1), is mapped to a factor
+     of 0–5 (1000 px/s of scrolling = 5) and adds up to 5x speed. Scrolling up reverses both rows,
+     which always move opposite to each other. Enough copies are kept to cover the row plus two spare,
+     and the position wraps at exactly one copy's width, so the loop has no seam. */
   (function(){
+    var ticker = $('.ticker');
     var rows = $$('.vel-row').map(function(r){
-      return { el:r, track:$('.vel-track', r), base:parseFloat(r.dataset.speed || 70) * (parseFloat(r.dataset.dir) || 1), x:0, dir:1, unitW:0 };
+      var d = parseFloat(r.dataset.dir) < 0 ? -1 : 1;
+      return { el:r, track:$('.vel-track', r), base:parseFloat(r.dataset.velocity) || 3, dir0:d, dir:d, offset:0, unitW:0 };
     });
     function build(){
       rows.forEach(function(s){
-        var units = $$('.vel-unit', s.track);
-        units.slice(1).forEach(function(u){ u.remove(); });
-        s.unitW = units[0].getBoundingClientRect().width || 1;
-        var need = Math.ceil(window.innerWidth / s.unitW) + 2;
-        for (var i = 1; i < need; i++){ s.track.appendChild(units[0].cloneNode(true)); }
+        var units = $$('.vel-unit', s.track), first = units[0];
+        var w = first.getBoundingClientRect().width;
+        if (!(w > 0)) return;
+        if (s.unitW > 0) s.offset = s.offset / s.unitW * w;   /* keep the same place when the size changes */
+        s.unitW = w;
+        var need = Math.max(3, Math.ceil(s.el.clientWidth / w) + 2);
+        for (var i = units.length; i < need; i++) s.track.appendChild(first.cloneNode(true));
+        for (var j = units.length - 1; j >= need; j--) units[j].remove();
+        place(s);
       });
     }
-    var lastY = window.scrollY, lastT = performance.now(), raw = 0, smooth = 0, lastScroll = 0;
-    window.addEventListener('scroll', function(){
-      var t = performance.now(), dt = Math.max(t - lastT, 1);
-      raw = (window.scrollY - lastY) / dt * 1000; lastY = window.scrollY; lastT = t; lastScroll = t;
-    }, { passive:true });
-    var prev = 0, raf = 0, visible = true;
+    function place(s){
+      s.offset = ((s.offset % s.unitW) + s.unitW) % s.unitW;
+      if (!isFinite(s.offset)) s.offset = 0;
+      s.track.style.transform = 'translate3d(' + (-s.offset).toFixed(2) + 'px,0,0)';
+    }
+    /* spring-smoothed scroll velocity, like motion's useSpring(useVelocity(scrollY)) */
+    var sv = 0, svVel = 0, lastY = 0, prev = 0, raf = 0, inView = false;
+    function spring(target, dt){
+      var n = Math.ceil(dt / 0.004), h = dt / n;
+      for (var i = 0; i < n; i++){ svVel += (400 * (target - sv) - 50 * svVel) * h; sv += svVel * h; }
+    }
     function tick(t){
       var dt = prev ? Math.min((t - prev) / 1000, 0.05) : 0; prev = t;
-      if (t - lastScroll > 90) raw = 0;
-      smooth += (raw - smooth) * Math.min(1, dt * 14);
-      var vf = Math.max(-6, Math.min(6, smooth / 1000 * 5));
-      rows.forEach(function(s){
-        if (vf < -0.01) s.dir = -1; else if (vf > 0.01) s.dir = 1;
-        var move = s.dir * s.base * dt;
-        move += s.dir * move * vf;
-        s.x += move;
-        s.x = s.x % s.unitW; if (s.x > 0) s.x -= s.unitW;
-        s.track.style.transform = 'translate3d(' + s.x.toFixed(1) + 'px,0,0)';
-      });
+      if (dt > 0){
+        var y = window.scrollY;
+        spring((y - lastY) / dt, dt); lastY = y;
+        var vf = (sv < 0 ? -1 : 1) * Math.min(5, Math.abs(sv) / 1000 * 5), abs = Math.abs(vf);
+        rows.forEach(function(s){
+          if (!(s.unitW > 0)) return;
+          if (abs > 0.1) s.dir = s.dir0 * (vf >= 0 ? 1 : -1);
+          s.offset += s.dir * s.unitW * s.base / 100 * (1 + abs) * dt;
+          place(s);
+        });
+      }
       raf = requestAnimationFrame(tick);
     }
-    function start(){ if (!raf && visible && !reduce.matches){ prev = 0; raf = requestAnimationFrame(tick); } }
+    function start(){
+      if (raf || !inView || reduce.matches || document.hidden) return;
+      prev = 0; lastY = window.scrollY; sv = svVel = 0;
+      raf = requestAnimationFrame(tick);
+    }
     function stop(){ cancelAnimationFrame(raf); raf = 0; }
     function setup(){
       if (reduce.matches){ stop(); rows.forEach(function(s){ s.track.style.transform = 'none'; }); return; }
       build(); start();
     }
     if ('IntersectionObserver' in window){
-      new IntersectionObserver(function(es){ visible = es[0].isIntersecting; visible ? start() : stop(); }).observe($('.ticker'));
-    }
-    var rb; window.addEventListener('resize', function(){ clearTimeout(rb); rb = setTimeout(function(){ if (!reduce.matches) build(); }, 150); });
-    if (reduce.addEventListener) reduce.addEventListener('change', setup);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setup); else setup();
+      new IntersectionObserver(function(es){ inView = es[0].isIntersecting; inView ? start() : stop(); }).observe(ticker);
+    } else { inView = true; }
+    document.addEventListener('visibilitychange', function(){ document.hidden ? stop() : start(); });
+    if ('ResizeObserver' in window){
+      var ro = new ResizeObserver(function(){ if (!reduce.matches) build(); });
+      ro.observe(ticker); rows.forEach(function(s){ ro.observe($('.vel-unit', s.track)); });
+    } else { window.addEventListener('resize', function(){ if (!reduce.matches) build(); }); }
+    if (reduce.addEventListener) reduce.addEventListener('change', setup); else if (reduce.addListener) reduce.addListener(setup);
+    setup();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(setup);
   })();
 
-  /* ---------- Trips rail: buttons, progress, drag ---------- */
+  /* ---------- Badge marquee (after Magic UI "Marquee") ----------
+     Identical .marquee-copy blocks sit side by side with the same --gap between them as between badges.
+     Each copy slides left by its own width plus one gap over --duration, then repeats, so the loop is seamless.
+     Enough copies are added to cover the screen at every point of the loop, and all copies share one clock. */
+  (function(){
+    var mq = $('.marquee'); if (!mq) return;
+    function sync(){
+      var copies = $$('.marquee-copy', mq);
+      var anims = copies.map(function(c){ return c.getAnimations ? c.getAnimations()[0] : null; });
+      if (anims[0] && anims.every(Boolean)){
+        var t = anims[0].currentTime;
+        anims.forEach(function(a){ a.currentTime = t; });
+      } else {
+        copies.forEach(function(c){ c.style.animation = 'none'; });
+        void mq.offsetWidth;
+        copies.forEach(function(c){ c.style.animation = ''; });
+      }
+    }
+    function fill(){
+      var copies = $$('.marquee-copy', mq), first = copies[0];
+      var gap = parseFloat(getComputedStyle(mq).columnGap) || 0;
+      var step = first.getBoundingClientRect().width + gap;
+      if (!(step > gap)) return;
+      var need = Math.max(2, Math.ceil((mq.clientWidth + gap) / step) + 1);
+      if (need === copies.length) return;
+      for (var i = copies.length; i < need; i++){
+        var c = first.cloneNode(true); c.setAttribute('aria-hidden', 'true'); mq.appendChild(c);
+      }
+      for (var j = copies.length - 1; j >= need; j--) copies[j].remove();
+      sync();
+    }
+    if ('ResizeObserver' in window){
+      var ro = new ResizeObserver(fill); ro.observe(mq); ro.observe($('.marquee-copy', mq));
+    } else { window.addEventListener('resize', fill); }
+    fill();
+  })();
+
+  /* ---------- Trips rail: arrows, progress bar, drag with snapping ----------
+     Touch, trackpad, shift+wheel and arrow keys scroll natively, and CSS scroll-snap settles each card.
+     Mouse drag is handled here: snapping is paused while dragging, then the row glides to the nearest
+     card (or the next one, if you flick), and snapping is switched back on only once it has landed. */
   (function(){
     var rail = $('.rail'), bar = $('.rail-bar span'), prevB = $('[data-rail="prev"]'), nextB = $('[data-rail="next"]');
-    function step(){ var c = $('.trip', rail); return c ? c.getBoundingClientRect().width + 24 : 300; }
+    function cards(){ return $$('.trip', rail); }
+    function step(){ var c = cards(); return c.length > 1 ? c[1].offsetLeft - c[0].offsetLeft : 300; }
+    function maxScroll(){ return rail.scrollWidth - rail.clientWidth; }
     function upd(){
-      var max = rail.scrollWidth - rail.clientWidth;
-      var vis = rail.clientWidth / rail.scrollWidth;
+      var max = maxScroll(), vis = rail.clientWidth / rail.scrollWidth;
       var p = max > 0 ? rail.scrollLeft / max : 1;
       bar.style.transform = 'scaleX(' + Math.min(1, vis + (1 - vis) * p).toFixed(3) + ')';
       prevB.disabled = rail.scrollLeft < 4;
       nextB.disabled = rail.scrollLeft > max - 4;
     }
     var beh = function(){ return reduce.matches ? 'auto' : 'smooth'; };
-    prevB.addEventListener('click', function(){ rail.scrollBy({ left:-step(), behavior:beh() }); });
-    nextB.addEventListener('click', function(){ rail.scrollBy({ left: step(), behavior:beh() }); });
+    var settleTimer = 0;
+    function glideTo(left){
+      var target = Math.max(0, Math.min(maxScroll(), left));
+      function done(){ clearTimeout(settleTimer); rail.removeEventListener('scrollend', done); rail.classList.remove('dragging'); }
+      clearTimeout(settleTimer);
+      if (Math.abs(rail.scrollLeft - target) < 1){ done(); return; }
+      if ('onscrollend' in window) rail.addEventListener('scrollend', done);
+      settleTimer = setTimeout(done, 700);
+      rail.scrollTo({ left:target, behavior:beh() });
+    }
+    function index(){ return Math.round(rail.scrollLeft / step()); }
+    prevB.addEventListener('click', function(){ rail.scrollTo({ left:(index() - 1) * step(), behavior:beh() }); });
+    nextB.addEventListener('click', function(){ rail.scrollTo({ left:(index() + 1) * step(), behavior:beh() }); });
     rail.addEventListener('scroll', upd, { passive:true });
     window.addEventListener('resize', upd);
     upd();
-    var down = false, moved = false, sx = 0, sl = 0;
+
+    var drag = null;
     rail.addEventListener('pointerdown', function(e){
-      if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,a')) return;
-      down = true; moved = false; sx = e.clientX; sl = rail.scrollLeft;
+      if (e.pointerType !== 'mouse' || e.button !== 0 || e.target.closest('button,a,input,select,textarea')) return;
+      drag = { id:e.pointerId, x:e.clientX, left:rail.scrollLeft, moved:false, hist:[{ x:e.clientX, t:e.timeStamp }] };
     });
     window.addEventListener('pointermove', function(e){
-      if (!down) return;
-      var dx = e.clientX - sx;
-      if (!moved && Math.abs(dx) > 5){ moved = true; rail.classList.add('dragging'); }
-      if (moved) rail.scrollLeft = sl - dx;
-    });
-    window.addEventListener('pointerup', function(){
-      if (!down) return; down = false;
-      if (moved){
-        var x = rail.scrollLeft; rail.classList.remove('dragging');
-        rail.scrollLeft = x;
-        var s = step(); rail.scrollTo({ left: Math.round(x / s) * s, behavior:beh() });
+      if (!drag || e.pointerId !== drag.id) return;
+      var dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 5){
+        drag.moved = true; clearTimeout(settleTimer); rail.classList.add('dragging');
+        if (window.getSelection) window.getSelection().removeAllRanges();
       }
+      if (!drag.moved) return;
+      rail.scrollLeft = drag.left - dx;
+      drag.hist.push({ x:e.clientX, t:e.timeStamp }); if (drag.hist.length > 6) drag.hist.shift();
     });
+    function release(e){
+      if (!drag || e.pointerId !== drag.id) return;
+      var d = drag; drag = null;
+      if (!d.moved) return;
+      var s = step(), pos = rail.scrollLeft / s, h = d.hist, v = 0;
+      var a = h[0], b = h[h.length - 1];
+      if (b.t > a.t && e.timeStamp - b.t < 120) v = (b.x - a.x) / (b.t - a.t);   /* px per ms; negative = dragged left */
+      var i = v < -0.35 ? Math.ceil(pos - 0.05) : v > 0.35 ? Math.floor(pos + 0.05) : Math.round(pos);
+      glideTo(i * s);
+    }
+    window.addEventListener('pointerup', release);
+    window.addEventListener('pointercancel', release);
   })();
 
   /* ---------- Instagram likes ---------- */
@@ -1019,7 +1275,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
   var dlg = $('#dlg'), form = $('#dlg-form'), done = $('#dlg-done'), opener = null, mode = 'reserve';
   function openDlg(m, tripId, size){
     mode = m; opener = document.activeElement;
-    form.hidden = false; done.hidden = true; form.reset();
+    form.hidden = false; done.hidden = true; form.reset(); $('#dlg-err').hidden = true; setBusy(false);
     $('#dlg-trip').value = tripId || trips[0].id;
     var sizeF = $('#dlg-size-f');
     if (m === 'group'){
@@ -1040,11 +1296,59 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
   $('.dlg-x').addEventListener('click', function(){ dlg.close(); });
   dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', function(){ if (opener && opener.focus) opener.focus(); });
+  var submitBtn = $('#dlg-submit'), submitLabel = '';
+  function setBusy(on){
+    if (on){ submitLabel = submitBtn.textContent; submitBtn.textContent = 'SENDING…'; }
+    else if (submitLabel){ submitBtn.textContent = submitLabel; submitLabel = ''; }
+    submitBtn.disabled = on;
+  }
+  function sendRequest(fd, t){
+    if (!FORM_KEY || FORM_KEY.indexOf('YOUR_') === 0){
+      console.warn('Pothik: booking form not connected. Set FORM_KEY to send requests by email.');
+      return Promise.resolve();
+    }
+    var group = mode === 'group', size = parseInt(fd.get('size'), 10) || 0;
+    var name = String(fd.get('name')).trim(), phone = String(fd.get('phone')).trim();
+    var data = {
+      access_key: FORM_KEY,
+      subject: (group ? 'Group quote: ' + size + ' people, ' : 'Seat reservation: ') + t.name + ' (' + name + ')',
+      from_name: 'Pothik website',
+      'Request': group ? 'Group quote' : 'Seat reservation (৳1,000 bKash request)',
+      'Name': name,
+      'WhatsApp': phone,
+      'Trip': t.name + ', ৳' + t.price.toLocaleString('en-IN') + ' per person'
+    };
+    if (group) data['Group size'] = size;
+    data['Site language'] = document.documentElement.lang === 'bn' ? 'Bangla' : 'English';
+    if (fd.get('botcheck')) data.botcheck = true;
+    var ctrl = 'AbortController' in window ? new AbortController() : null;
+    var timer = ctrl ? setTimeout(function(){ ctrl.abort(); }, 15000) : 0;
+    return fetch(FORM_URL, {
+      method:'POST', headers:{ 'Content-Type':'application/json', 'Accept':'application/json' },
+      body: JSON.stringify(data), signal: ctrl ? ctrl.signal : undefined
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(j){
+        if (!r.ok || j.success === false) throw new Error(j.message || ('HTTP ' + r.status));
+      });
+    }).finally(function(){ clearTimeout(timer); });
+  }
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    if (submitBtn.disabled) return;
     if (!form.checkValidity()){ form.reportValidity(); return; }
     var fd = new FormData(form);
     var t = trips.filter(function(x){ return x.id === fd.get('trip'); })[0];
+    var err = $('#dlg-err'); err.hidden = true;
+    setBusy(true);
+    sendRequest(fd, t).then(function(){ setBusy(false); showDone(fd, t); }, function(ex){
+      console.error('Pothik: booking request failed', ex);
+      setBusy(false);
+      err.textContent = 'That didn\u2019t go through. Check your connection and try again.';
+      err.hidden = false;
+      submitBtn.focus();
+    });
+  });
+  function showDone(fd, t){
     var name = String(fd.get('name')).trim().split(' ')[0];
     var msg;
     if (mode === 'group'){
@@ -1056,8 +1360,154 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     form.hidden = true; done.hidden = false;
     $('#dlg-ok').addEventListener('click', function(){ dlg.close(); });
     $('#dlg-ok').focus();
-  });
+  }
   function escapeHtml(s){ return s.replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+
+  /* ---------- Big numbers (after Magic UI "Number Ticker") ----------
+     [data-count]: counts from 0 with a spring (stiffness 100, damping 60) once it is half in view.
+     [data-type]: types its characters in one by one with a caret.
+     The final text stays in a visually hidden span for screen readers; ৳0 is left as it is. */
+  (function(){
+    var counters = $$('.num b[data-count]'), typers = $$('.num b[data-type]');
+    if (reduce.matches || !('IntersectionObserver' in window)) return;
+    function count(b){
+      var out = $('.num-v', b), to = parseFloat(b.dataset.count), suf = b.dataset.suffix || '';
+      var x = 0, v = 0, last = 0;
+      (function step(t){
+        var dt = last ? Math.min((t - last) / 1000, 0.05) : 0; last = t;
+        for (var n = Math.ceil(dt / 0.004), h = dt / (n || 1), i = 0; i < n; i++){ v += (100 * (to - x) - 60 * v) * h; x += v * h; }
+        var shown = Math.round(x);
+        out.textContent = new Intl.NumberFormat('en-US').format(shown) + suf;
+        if (Math.abs(to - x) < 0.01 && Math.abs(v) < 0.01){ out.textContent = new Intl.NumberFormat('en-US').format(to) + suf; return; }
+        requestAnimationFrame(step);
+      })(0);
+    }
+    function type(b){
+      var chars = $$('.ch', b), i = 0;
+      (function next(){
+        chars.forEach(function(c){ c.classList.remove('caret'); });
+        if (i < chars.length){ chars[i].classList.remove('is-hidden'); chars[i].classList.add('caret'); i++; setTimeout(next, 150); }
+        else { chars[chars.length - 1].classList.add('caret'); setTimeout(function(){ chars[chars.length - 1].classList.remove('caret'); }, 1600); }
+      })();
+    }
+    counters.forEach(function(b){ $('.num-v', b).textContent = '0' + (b.dataset.suffix || ''); });
+    typers.forEach(function(b){
+      var out = $('.num-v', b), txt = out.textContent; out.textContent = '';
+      Array.from(txt).forEach(function(ch){ var s = document.createElement('span'); s.className = 'ch is-hidden'; s.textContent = ch; out.appendChild(s); });
+    });
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        if (e.target.hasAttribute('data-count')) count(e.target); else setTimeout(function(){ type(e.target); }, 200);
+      });
+    }, { threshold:.5 });
+    counters.concat(typers).forEach(function(b){ io.observe(b); });
+  })();
+
+  /* ---------- Section titles (after Magic UI "Hyper Text") ----------
+     On hover, letters scramble through A-Z and settle left to right over 800ms. Each letter keeps the
+     exact width of the real one while it scrambles, so the heading never shifts or rewraps, and each slot only
+     cycles through the six letters closest to its own width, so wide letters never spill over narrow ones.
+     Bangla text is skipped. */
+  (function(){
+    var SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', DURATION = 800;
+    var titles = $$('.sec h2.mega'); var fin = $('.final h2 .t'); if (fin) titles.push(fin);
+    var cv = document.createElement('canvas').getContext('2d');
+    function letterWidths(el){
+      var cs = getComputedStyle(el);
+      cv.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+      return SET.split('').map(function(L){ return { L:L, w:cv.measureText(L).width }; });
+    }
+    function nearest(table, w){
+      return table.slice().sort(function(a, b){ return Math.abs(a.w - w) - Math.abs(b.w - w); }).slice(0, 6).map(function(x){ return x.L; });
+    }
+    function scramble(el){
+      if (el._hx || reduce.matches || el.children.length) return;
+      var text = el.textContent;
+      if (!text.trim() || /[\u0980-\u09FF]/.test(text)) return;
+      var node = el.firstChild, chars = Array.from(text), widths = [], off = 0, r = document.createRange();
+      chars.forEach(function(ch){ r.setStart(node, off); r.setEnd(node, off + ch.length); widths.push(r.getBoundingClientRect().width); off += ch.length; });
+      el._hx = true;
+      var table = letterWidths(el);
+      var sr = document.createElement('span'); sr.className = 'vh'; sr.textContent = text;
+      var vis = document.createElement('span'); vis.setAttribute('aria-hidden', 'true');
+      var slots = [], word = null;
+      chars.forEach(function(ch, i){
+        if (/\s/.test(ch)){ vis.appendChild(document.createTextNode(ch)); word = null; return; }
+        if (!word){ word = document.createElement('span'); word.className = 'hx-word'; vis.appendChild(word); }
+        var c = document.createElement('span'); c.className = 'hx-ch'; c.style.width = widths[i] + 'px'; c.textContent = ch; word.appendChild(c);
+        slots.push({ el:c, ch:ch, i:i, letter:/[A-Za-z0-9]/.test(ch), pool:nearest(table, widths[i]) });
+      });
+      el.textContent = ''; el.appendChild(sr); el.appendChild(vis);
+      var start = 0;
+      (function frame(t){
+        if (!vis.isConnected){ el._hx = false; return; }          /* language switched mid-scramble */
+        if (!start) start = t;
+        var progress = Math.min((t - start) / DURATION, 1), upto = progress * chars.length;
+        slots.forEach(function(s){ s.el.textContent = (!s.letter || s.i <= upto) ? s.ch : s.pool[Math.floor(Math.random() * s.pool.length)]; });
+        if (progress < 1) requestAnimationFrame(frame);
+        else { el.textContent = text; el._hx = false; }
+      })(0);
+    }
+    titles.forEach(function(el){ (el.closest('h2') || el).addEventListener('pointerenter', function(){ scramble(el); }); });
+  })();
+
+  /* ---------- FAQ accordion (Animate UI style) ----------
+     Height animates with the page's shared speed and easing (--dur, --ease), with a fade and a soft mask at the
+     bottom edge; the + spins to x as soon as an item starts opening. Only one answer is open at a time, and a click
+     mid-animation reverses smoothly from where it is. Without JavaScript the native <details> still works. */
+  (function(){
+    var list = $('.faq-list'); if (!list) return;
+    list.classList.add('js');
+    var items = $$('details', list).map(function(d){
+      var it = { d:d, body:$('.faq-body', d), p:d.open ? 1 : 0, from:0, t0:0, span:0, target:d.open ? 1 : 0, raf:0 };
+      d.removeAttribute('name');                     /* exclusivity is handled here so closing can animate too */
+      d.classList.toggle('is-open', d.open);
+      return it;
+    });
+    function render(it){
+      var h = it.body.scrollHeight, p = it.p;
+      it.body.style.height = Math.max(0, p * h).toFixed(1) + 'px';
+      it.body.style.opacity = Math.max(0, Math.min(1, p)).toFixed(3);
+      it.body.style.setProperty('--stop', (Math.max(0, Math.min(1, p)) * 100).toFixed(1) + '%');
+    }
+    function settle(it){
+      it.raf = 0; it.t0 = 0; it.p = it.target;
+      it.body.style.height = ''; it.body.style.opacity = ''; it.body.style.removeProperty('--stop');
+      if (!it.target) it.d.open = false;
+    }
+    function step(it, t){
+      if (!it.t0) it.t0 = t;
+      var k = it.span > 0 ? Math.min(1, (t - it.t0) / it.span) : 1;
+      it.p = it.from + (it.target - it.from) * MOTION.ease(k);
+      if (k >= 1){ settle(it); return; }
+      render(it);
+      it.raf = requestAnimationFrame(function(tt){ step(it, tt); });
+    }
+    function go(it, to){
+      if (it.target === to) return;
+      it.target = to;
+      it.d.classList.toggle('is-open', !!to);
+      if (to && !it.d.open){ it.p = 0; render(it); it.d.open = true; }
+      if (reduce.matches){ cancelAnimationFrame(it.raf); settle(it); return; }
+      it.from = it.p; it.t0 = 0; it.span = MOTION.dur * Math.abs(to - it.from);   /* same speed when reversing mid-way */
+      if (!it.raf){ render(it); it.raf = requestAnimationFrame(function(t){ step(it, t); }); }
+    }
+    items.forEach(function(it){
+      $('summary', it.d).addEventListener('click', function(e){
+        e.preventDefault();
+        var open = !it.target;
+        if (open) items.forEach(function(o){ if (o !== it && o.target) go(o, 0); });
+        go(it, open ? 1 : 0);
+      });
+      /* opened or closed by something else, e.g. the browser's find-in-page */
+      it.d.addEventListener('toggle', function(){
+        if (it.d.open && !it.target){ cancelAnimationFrame(it.raf); it.target = 1; settle(it); it.d.classList.add('is-open'); items.forEach(function(o){ if (o !== it && o.target) go(o, 0); }); }
+        else if (!it.d.open && it.target){ cancelAnimationFrame(it.raf); it.target = 0; settle(it); it.d.classList.remove('is-open'); }
+      });
+    });
+  })();
 
   /* ---------- EN | বাংলা ---------- */
   var BN = {
@@ -1066,7 +1516,7 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
     'hero.cta':'ট্রিপ<br>বুক করো ↗',
     'hero.line':'উইকেন্ড ট্রিপ ৳৫,৮০০ থেকে। বোরিং আইটিনেরারি নেই। পেমেন্ট বিকাশে।',
     'trips.h':'ট্রিপ →', 'trips.sub':'ফিক্সড দাম। ঢাকা থেকে যাতায়াত, থাকা, খাওয়া আর ট্রিপ লিডার, সব ইনক্লুডেড।',
-    'card.book':'বুক ↗',
+    'card.book':'বুক ↗', 'trips.hint':'টেনে দেখো',
     'num.1':'লুকানো চার্জ। কোনোদিনও না।', 'num.2':'হোয়াটসঅ্যাপে বাংলায় সাপোর্ট', 'num.3':'ট্রিপ বুক করেছে ২৫-এর নিচের ট্রাভেলাররা',
     'how.h':'কীভাবে কাজ করে',
     'how.1t':'ট্রিপ বেছে নাও', 'how.1d':'ফিক্সড দামের ট্রিপ দেখো। কার্ডে যে দাম, সেটাই দেবে: যাতায়াত, থাকা, খাওয়া আর গাইড সহ।',
