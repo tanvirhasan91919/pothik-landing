@@ -832,9 +832,9 @@ dialog::backdrop{ background:rgba(17,17,17,.7); }
 <script>
 (function(){
   'use strict';
-  /* Booking emails: paste your Web3Forms access key here (web3forms.com). It is safe to be public.
-     Until it is set, the booking dialog only shows a confirmation and sends nothing. */
-  var FORM_KEY = 'YOUR_WEB3FORMS_ACCESS_KEY';
+  /* Booking emails go through Web3Forms (web3forms.com) to the inbox this access key was created with.
+     The key is safe to be public. Replace it to send requests to a different inbox. */
+  var FORM_KEY = '775a1f21-9673-43b6-b5b9-e3075fc0cb7f';
   var FORM_URL = 'https://api.web3forms.com/submit';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var $ = function(s, r){ return (r||document).querySelector(s); };
