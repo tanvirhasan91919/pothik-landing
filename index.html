@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pothik Holidays — Fixed-price group trips from Dhaka</title>
 <meta name="description" content="Honest, fixed-price group trips across Bangladesh and abroad. Reserve with ৳1,000 on bKash and pay the rest in parts.">
-<meta name="theme-color" content="#F3EFE6">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://images.unsplash.com">
@@ -28,7 +28,7 @@
 <style>
 /* ============ TOKENS ============ */
 :root{
-  --bg:#F3EFE6; --ink:#111111; --pink:#F67280; --mauve:#C06C84; --plum:#6C5B7B; --blue:#355C7D;
+  --bg:#FFFFFF; --ink:#111111; --pink:#F67280; --mauve:#C06C84; --plum:#6C5B7B; --blue:#355C7D;
   --hot:#FF4F1A; /* interaction colour: hero grid squares and trip-card hover */
   --rule:3px solid var(--ink);
   --sh:6px 6px 0 var(--ink);
@@ -127,6 +127,10 @@ html[lang="bn"] .btn{ letter-spacing:0; }
 .lang button[aria-pressed="true"]{ background:var(--ink); color:var(--bg); }
 .menu-btn{ background:var(--bg); font-family:var(--f-mono); font-weight:700; font-size:13px; padding:0 var(--s2); height:40px; cursor:pointer; }
 .menu-btn[aria-expanded="true"]{ background:var(--ink); color:var(--bg); }
+/* Round nav buttons: BOOK NOW, the language toggle and MENU are pills */
+.nav .btn,.menu-foot .btn,.lang,.menu-btn{ border-radius:999px; }
+.lang button:first-child{ border-radius:999px 0 0 999px; padding-left:14px; }
+.lang button:last-child{ border-radius:0 999px 999px 0; padding-right:14px; }
 /* Full-screen mobile menu: sits under the bar (which keeps the CLOSE button), giant Anton links */
 .menu{ position:fixed; inset:0; z-index:45; display:flex; flex-direction:column; justify-content:space-between; gap:var(--s5);
   background:var(--bg); padding:calc(var(--nav-h) + 3px + var(--s3)) var(--pad) var(--s5); overflow-y:auto; overscroll-behavior:contain;
